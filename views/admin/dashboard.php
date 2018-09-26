@@ -5,4 +5,4 @@ if ( count( get_included_files() ) == 1 ) {
 }
 ?>
 
-<h1 id='dashboard'>dashboard</h1>
+<h1 id='dashboard'>name {{ name }} : id {{ id }}</h1>

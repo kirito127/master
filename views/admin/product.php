@@ -4,4 +4,13 @@ if ( count( get_included_files() ) == 1 ) {
     exit("Direct access not permitted.");
 }
 ?>
-<h1>product page</h1>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="/">Admin</a></li>
+    <li class="breadcrumb-item active" aria-current="page">Products</li>
+  </ol>
+</nav>
+
+<div class="container-fluid">
+    
+</div>
