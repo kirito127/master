@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name='description' content='{{ page.description }}'>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="author" content="Cale Adrian Lacson">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{{ page.title }}</title>
+
+    {# css #}
+    <link rel='stylesheet' href='{{ base_url() }}/vendor/twbs/bootstrap/dist/css/bootstrap.min.css'>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">    
+    <link rel="stylesheet" href="{{ base_url() }}/css/style.css">
+</head>
+<body  class='app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden nano'>
+    {# header #}
+    {% include 'partials/header.twig' %}
+
+    <div class="app-body">
+        <div class="sidebar">
+            {% include 'partials/sidebar.twig' %}
+        </div>
+
+        <main class="main">
+            {% include 'partials/content.twig' %}
+        </main>
+    </div>
+
+    {# footer #}
+    {% include 'partials/footer.twig' %}
+
+    {# script #}
+    {# <script src="{{ base_url() }}/vendor/twbs/bootstrap/js/dist/popover.js"></script>  #}
+    <script src="{{ base_url() }}/js/jquery.min.js"></script>
+    <script src="{{ base_url() }}/vendor/twbs/bootstrap/dist/js/bootstrap.min.js"></script>
+    <script src="{{ base_url() }}/js/pace.min.js"></script>
+    <script src="{{ base_url() }}/js/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,50 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+
+<div class="pure-g">
+    <div class="pure-u-3-5">
+        <form action="" method="post" class="pure-form pure-form-stacked">
+            <div class="">
+                <label for="name">Full name *</label>
+                <input type="text" name="name" id="name" placeholder="Full name (required)">
+            </div>
+            <div class="">
+                <label for="name">Email *</label>
+                <input type="text" name="email" id="email" placeholder="Full name (required)">
+            </div>
+            <div class="">
+                <label for="name">Message *</label>
+                <textarea name="message" id="message" cols="60" rows="8" placeholder="message..."></textarea>
+            </div>
+            <button type="submit" class="pure-button pure-button-primary">Send message</button>
+        </form>
+    </div>
+    <div class="pure-u-2-5">
+        <p><strong>Get in touch with us!</strong></p>
+        <p>
+            Our team awaits to start business with you
+        </p>
+        <p>
+            The company was established in 1965 by Don Alphonso Vinci
+        </p>
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Deleniti nostrum vitae repellat voluptate corporis, quod sed illo expedita, distinctio reprehenderit voluptates ut nam, reiciendis fugiat temporibus vero cumque quia dolores.
+        </p>
+    </div>
+</div>
+
+
+<hr>
+
+<aside class="pure-g">
+    <address class="pure-u-1">
+        <p><b>Address:</b></p>
+        <p>1245 Mandela Ave, NY <br>
+            +1 555 555 555 <br> 
+            www.alphainc.com
+        </p>
+    </address>
+</aside>
+
+{% endblock %}
