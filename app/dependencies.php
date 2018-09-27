@@ -1,4 +1,5 @@
 <?php
+require_once 'Controller/apiController.php';
 // Get the container
 $container = $app->getContainer();
 
