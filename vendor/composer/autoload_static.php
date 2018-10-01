@@ -13,6 +13,7 @@ class ComposerStaticInit1af976a782c9fc31e146753a9bb43d8b
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         '028fdea3165c4ba1ecccc83b7fec69fc' => __DIR__ . '/..' . '/cakephp/collection/functions.php',
         '948ad5488880985ff1c06721a4e447fe' => __DIR__ . '/..' . '/cakephp/utility/bootstrap.php',
+        '72579e7bd17821bb1321b87411366eae' => __DIR__ . '/..' . '/illuminate/support/helpers.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -34,6 +35,7 @@ class ComposerStaticInit1af976a782c9fc31e146753a9bb43d8b
         ),
         'P' => 
         array (
+            'Psr\\SimpleCache\\' => 16,
             'Psr\\Log\\' => 8,
             'Psr\\Http\\Message\\' => 17,
             'Psr\\Container\\' => 14,
@@ -44,17 +46,21 @@ class ComposerStaticInit1af976a782c9fc31e146753a9bb43d8b
         array (
             'Monolog\\' => 8,
         ),
-        'K' => 
-        array (
-            'Klein\\' => 6,
-        ),
         'I' => 
         array (
             'Interop\\Container\\' => 18,
+            'Illuminate\\Support\\' => 19,
+            'Illuminate\\Database\\' => 20,
+            'Illuminate\\Contracts\\' => 21,
+            'Illuminate\\Container\\' => 21,
         ),
         'F' => 
         array (
             'FastRoute\\' => 10,
+        ),
+        'D' => 
+        array (
+            'Doctrine\\Common\\Inflector\\' => 26,
         ),
         'C' => 
         array (
@@ -64,6 +70,11 @@ class ComposerStaticInit1af976a782c9fc31e146753a9bb43d8b
             'Cake\\Core\\' => 10,
             'Cake\\Collection\\' => 16,
             'Cake\\Cache\\' => 11,
+        ),
+        'A' => 
+        array (
+            'Automattic\\WooCommerce\\' => 23,
+            'App\\' => 4,
         ),
     );
 
@@ -109,6 +120,10 @@ class ComposerStaticInit1af976a782c9fc31e146753a9bb43d8b
         array (
             0 => __DIR__ . '/..' . '/slim/slim/Slim',
         ),
+        'Psr\\SimpleCache\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/psr/simple-cache/src',
+        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
@@ -133,17 +148,33 @@ class ComposerStaticInit1af976a782c9fc31e146753a9bb43d8b
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
         ),
-        'Klein\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/klein/klein/src/Klein',
-        ),
         'Interop\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/container-interop/container-interop/src/Interop/Container',
         ),
+        'Illuminate\\Support\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/illuminate/support',
+        ),
+        'Illuminate\\Database\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/illuminate/database',
+        ),
+        'Illuminate\\Contracts\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/illuminate/contracts',
+        ),
+        'Illuminate\\Container\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/illuminate/container',
+        ),
         'FastRoute\\' => 
         array (
             0 => __DIR__ . '/..' . '/nikic/fast-route/src',
+        ),
+        'Doctrine\\Common\\Inflector\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/doctrine/inflector/lib/Doctrine/Common/Inflector',
         ),
         'Cake\\Utility\\' => 
         array (
@@ -168,6 +199,14 @@ class ComposerStaticInit1af976a782c9fc31e146753a9bb43d8b
         'Cake\\Cache\\' => 
         array (
             0 => __DIR__ . '/..' . '/cakephp/cache',
+        ),
+        'Automattic\\WooCommerce\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/automattic/woocommerce/src/WooCommerce',
+        ),
+        'App\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/app',
         ),
     );
 

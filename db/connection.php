@@ -4,7 +4,7 @@ class DatabaseConnection{
     public function openConn(){
         try{
             $host = 'localhost';//'sg1-ls2.a2hosting.com'; //
-            $db   = 'dealahos_wp601';
+            $db   = 'dealahos_alla';
             $user = 'root';//'dealahos_user'; //
             $pass = '';//'kirito127';
             $charset = 'utf8mb4';
