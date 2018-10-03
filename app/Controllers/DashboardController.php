@@ -10,7 +10,8 @@ use GuzzleHttp\Client;
 class DashboardController extends Controller{
     
     public function index($request, $response){
-        $var = ['message' => ''];
+        $this->flash->addMessage('info', '');
+        return $this->view->render($response, 'admin/dashboard.twig');
 
         // $user = $this->db->table('users')->find(1);
         // echo json_encode($user->display_name);
@@ -18,7 +19,6 @@ class DashboardController extends Controller{
     //     $user = User::where('id', '2');
     //     var_dump($user);
     //     die();
-    return $this->view->render($response, 'admin/dashboard.twig', $var);
     }
 }
 

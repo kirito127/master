@@ -6,6 +6,12 @@ use Slim\Views\Twig as View;
 use Respect\Validation\Validator as v;
 class AuthController extends Controller{
 
+    public function getLogout($request, $response){
+        $this->auth->logout();
+        return $response->withRedirect($this->router->pathFor('auth.login'));
+
+    }
+
     public function getLogin($request, $response){
         return $this->view->render($response, 'auth/login.twig');
     }
@@ -29,8 +35,10 @@ class AuthController extends Controller{
         );
 
         if(!$auth){
+            $this->flash->addMessage('login-error', 'The username/email or password youve enter is incorrect, Please try again.');
             return $response->withRedirect($this->router->pathFor('auth.login'));
         }
+
         return $response->withRedirect($this->router->pathFor('dashboard'));
     }
 

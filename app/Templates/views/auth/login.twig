@@ -12,10 +12,16 @@
 
 <body class=''>
     <div class="container p-4" style='max-width:40em'>
+        {% if flash.getMessage('login-error') %}
+        <div class="alert alert-danger">
+            {{ flash.getMessage('login-error') | first }}
+        </div>
+        {% endif %}
         
         <form method='post' action="{{ path_for('auth.login') }}">
             <div class="card">
             <div class="card-header">
+                <h4>Log in</h4>
             </div>
             <div class="card-body">
                     <div class="form-group">

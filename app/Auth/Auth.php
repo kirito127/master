@@ -10,26 +10,8 @@ class Auth{
         $this->container = $container;
     }
 
-    public function user(){
-        return User::find($_SESSION['userid']);
-    }
-
-    public function role(){
-        $id = $this->user()->ID;
-        $role = User::join('usermeta', 'users.ID', '=', 'usermeta.user_id')
-        ->select('usermeta.meta_value')
-        ->where([
-            ['usermeta.meta_key', '=', 'wpfw_capabilities'],
-            ['users.ID', '=', 4]
-        ])->first();
-        $role = unserialize($role->meta_value);
-        $array = array_keys($role);
-
-        return $array;
-    }
-
     public function check(){
-        return isset($_SESSION['user']);
+        return isset($_SESSION['userid']);
     }
 
     public function attempt($email, $password){
@@ -47,5 +29,27 @@ class Auth{
         }
         return false;
     }
+
+    public function logout(){
+        unset($_SESSION['userid']);
+    }
+
+    public function user(){
+        return $this->check() ? User::find($_SESSION['userid']) : null;
+    }
+
+    // public function role(){
+    //     $id = $this->user()->ID;
+    //     $role = User::join('usermeta', 'users.ID', '=', 'usermeta.user_id')
+    //     ->select('usermeta.meta_value')
+    //     ->where([
+    //         ['usermeta.meta_key', '=', 'wpfw_capabilities'],
+    //         ['users.ID', '=', 4]
+    //     ])->first();
+    //     $role = unserialize($role->meta_value);
+    //     $array = array_keys($role);
+    //     return $array;
+    // }
+
 
 }

@@ -34,6 +34,7 @@ class ComposerStaticInit1af976a782c9fc31e146753a9bb43d8b
             'Symfony\\Component\\Console\\' => 26,
             'Symfony\\Component\\Config\\' => 25,
             'Slim\\Views\\' => 11,
+            'Slim\\Flash\\' => 11,
             'Slim\\Csrf\\' => 10,
             'Slim\\' => 5,
         ),
@@ -129,6 +130,10 @@ class ComposerStaticInit1af976a782c9fc31e146753a9bb43d8b
         array (
             0 => __DIR__ . '/..' . '/slim/php-view/src',
             1 => __DIR__ . '/..' . '/slim/twig-view/src',
+        ),
+        'Slim\\Flash\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/slim/flash/src',
         ),
         'Slim\\Csrf\\' => 
         array (

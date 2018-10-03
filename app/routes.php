@@ -3,6 +3,7 @@
     // Psr-7 Request and Response interfaces
     use Psr\Http\Message\ServerRequestInterface as Request;
     use Psr\Http\Message\ResponseInterface as Response;
+    use App\Middleware\AuthMiddleWare;
 
     $app->add(function (Request $request, Response $response, callable $next) {
         $uri = $request->getUri();
@@ -20,13 +21,17 @@
         }
         return $next($request, $response);
     });
+   
 
-    $app->get('/', function (Request $request, Response $response, $args)   {
-        $vars = [
-            'page' => [ 'title' => 'Dashboard', 'description' => 'Dashboard Page'],
-        ];  
-        return $this->view->render($response, 'admin/dashboard.twig', $vars);
-    })->setName('dashboard');
+
+    $app->group('', function(){
+        $this->get('/','DashboardController:index')->setName('dashboard');
+    })->add(new AuthMiddleWare($container));
+
+
+    $app->get('/auth/logout','AuthController:getLogout')->setName('auth.logout');
+
+
 
     
     $app->get('/auth/login','AuthController:getLogin')->setName('auth.login');

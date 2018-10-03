@@ -10,9 +10,15 @@ $container['db'] = function($container) use ($capsule){
     return $capsule;
 };
 
+
 // auth dependency
 $container['auth'] = function($container){
     return new \App\Auth\Auth($container);
+};
+
+//flash dependency
+$container['flash'] = function($container){
+    return new \Slim\Flash\Messages;
 };
 
 // Twig view dependency
@@ -27,8 +33,10 @@ $container['view'] = function ($container) {
     $view->getEnvironment()->addGlobal('auth', [
         'check' => $container->auth->check(),
         'user'  => $container->auth->user(),
-        'role'  => $container->auth->role(),
+        // 'role'  => $container->auth->role(),
     ]);
+
+    $view->getEnvironment()->addGlobal('flash', $container->flash);
 
     return $view;
 };
@@ -50,7 +58,7 @@ $container['AuthController'] = function($container){
 };
 
 $container['DashboardController'] = function($container){
-    return new \App\Controllers\DashboardController($container->HttpClient);
+    return new \App\Controllers\DashboardController($container);
 };
 
 $container['ApiController'] = function($container){
