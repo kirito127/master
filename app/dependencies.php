@@ -1,5 +1,4 @@
 <?php
-
 // Get the container
 $container = $app->getContainer();
 
@@ -11,14 +10,26 @@ $container['db'] = function($container) use ($capsule){
     return $capsule;
 };
 
+// auth dependency
+$container['auth'] = function($container){
+    return new \App\Auth\Auth($container);
+};
+
 // Twig view dependency
-$container['view'] = function ($c) {
-    $cf = $c->get('settings')['view'];
+$container['view'] = function ($container) {
+    $cf = $container->get('settings')['view'];
     $view = new \Slim\Views\Twig($cf['path'], $cf['twig']);
     $view->addExtension(new \Slim\Views\TwigExtension(
-        $c->router,
-        $c->request->getUri()
+        $container->router,
+        $container->request->getUri()
     ));
+
+    $view->getEnvironment()->addGlobal('auth', [
+        'check' => $container->auth->check(),
+        'user'  => $container->auth->user(),
+        'role'  => $container->auth->role(),
+    ]);
+
     return $view;
 };
 
@@ -52,5 +63,15 @@ $container['validator'] = function($container){
 
 $app->add(new \App\Middleware\ValidationErrorsMiddleware($container));
 $app->add(new \App\Middleware\OldLoginInputMiddleware($container));
+$app->add(new \App\Middleware\CsrfViewMiddleware($container));
 
+$container['csrf'] = function($container){
+    return new \Slim\Csrf\Guard;
+};
+$app->add($container->csrf);
+
+
+$container['passwordhasher'] = function($container){
+    return new \App\Auth\PasswordHash(8, TRUE);
+};
 
