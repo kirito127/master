@@ -5,11 +5,12 @@ namespace App\Controllers;
 use App\Controllers\DashboardController;
 use App\Models\User;
 use Slim\Views\Twig as View;
+use GuzzleHttp\Client;
 
 class DashboardController extends Controller{
-
+    
     public function index($request, $response){
-        $var = ['message' => 'Hello World'];
+        $var = ['message' => ''];
 
         // $user = $this->db->table('users')->find(1);
         // echo json_encode($user->display_name);
@@ -17,8 +18,7 @@ class DashboardController extends Controller{
     //     $user = User::where('id', '2');
     //     var_dump($user);
     //     die();
-    //    return $this->view->render($response, 'admin/dashboard.twig', $var);
-    print_r($woocommerce->get('products/100'));
+    return $this->view->render($response, 'admin/dashboard.twig', $var);
     }
 }
 

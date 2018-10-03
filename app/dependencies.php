@@ -22,12 +22,35 @@ $container['view'] = function ($c) {
     return $view;
 };
 
-$container['DashboardController'] = function($container){
-    return new \App\Controllers\DashboardController($container);
+// woo dependency
+$container['Client'] = function($container){
+    $woocommerce = new Automattic\WooCommerce\Client; 
+    return $woocommerce;
 };
 
-// $woocommerce = require __DIR__ . '/../app/Wooapi/woosettings.php';
+//guzzle dependency
+$container['HttpClient'] = function ($container) {
+    $client = new \GuzzleHttp\Client();
+    return $client;
+};
+
+$container['AuthController'] = function($container){
+    return new \App\Controllers\Auth\AuthController($container);
+};
+
+$container['DashboardController'] = function($container){
+    return new \App\Controllers\DashboardController($container->HttpClient);
+};
 
 $container['ApiController'] = function($container){
-return new \App\Controllers\ApiController($container);
+    return new \App\Controllers\ApiController($container);
 };
+
+$container['validator'] = function($container){
+    return new \App\Validation\Validator;
+};
+
+$app->add(new \App\Middleware\ValidationErrorsMiddleware($container));
+$app->add(new \App\Middleware\OldLoginInputMiddleware($container));
+
+

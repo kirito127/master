@@ -13,7 +13,10 @@ class ComposerStaticInit1af976a782c9fc31e146753a9bb43d8b
         '253c157292f75eb38082b5acb06f3f01' => __DIR__ . '/..' . '/nikic/fast-route/src/functions.php',
         '028fdea3165c4ba1ecccc83b7fec69fc' => __DIR__ . '/..' . '/cakephp/collection/functions.php',
         '948ad5488880985ff1c06721a4e447fe' => __DIR__ . '/..' . '/cakephp/utility/bootstrap.php',
+        'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
+        'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
         '72579e7bd17821bb1321b87411366eae' => __DIR__ . '/..' . '/illuminate/support/helpers.php',
+        '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
     );
 
     public static $prefixLengthsPsr4 = array (
@@ -32,6 +35,10 @@ class ComposerStaticInit1af976a782c9fc31e146753a9bb43d8b
             'Symfony\\Component\\Config\\' => 25,
             'Slim\\Views\\' => 11,
             'Slim\\' => 5,
+        ),
+        'R' => 
+        array (
+            'Respect\\Validation\\' => 19,
         ),
         'P' => 
         array (
@@ -53,6 +60,12 @@ class ComposerStaticInit1af976a782c9fc31e146753a9bb43d8b
             'Illuminate\\Database\\' => 20,
             'Illuminate\\Contracts\\' => 21,
             'Illuminate\\Container\\' => 21,
+        ),
+        'G' => 
+        array (
+            'GuzzleHttp\\Psr7\\' => 16,
+            'GuzzleHttp\\Promise\\' => 19,
+            'GuzzleHttp\\' => 11,
         ),
         'F' => 
         array (
@@ -120,6 +133,10 @@ class ComposerStaticInit1af976a782c9fc31e146753a9bb43d8b
         array (
             0 => __DIR__ . '/..' . '/slim/slim/Slim',
         ),
+        'Respect\\Validation\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/respect/validation/library',
+        ),
         'Psr\\SimpleCache\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/simple-cache/src',
@@ -167,6 +184,18 @@ class ComposerStaticInit1af976a782c9fc31e146753a9bb43d8b
         'Illuminate\\Container\\' => 
         array (
             0 => __DIR__ . '/..' . '/illuminate/container',
+        ),
+        'GuzzleHttp\\Psr7\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/psr7/src',
+        ),
+        'GuzzleHttp\\Promise\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/promises/src',
+        ),
+        'GuzzleHttp\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/guzzlehttp/guzzle/src',
         ),
         'FastRoute\\' => 
         array (
