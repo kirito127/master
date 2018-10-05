@@ -1,5 +1,5 @@
-{% if flash.getMessage('info') %}
+{% if  flash.getMessage('content-alert') is not null   %}
 <div class="container alert alert-danger">
- {{  flash.getMessage('info') | first }}
+ {{ flash.getMessage('content-alert') | first }}
 </div>
 {% endif %}

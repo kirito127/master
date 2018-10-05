@@ -12,6 +12,7 @@
     <link rel='stylesheet' href='{{ base_url() }}/vendor/twbs/bootstrap/dist/css/bootstrap.min.css'>
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous">    
     <link rel="stylesheet" href="{{ base_url() }}/css/style.css">
+    <script src="{{ base_url() }}/js/jquery.min.js"></script>
 </head>
 <body  class='app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden nano'>
     {# header #}
@@ -23,8 +24,8 @@
         </div>
 
         <main class="main">
-            {% include 'partials/content-flash.twig' %}
-            {% include 'partials/content.twig' %}
+            {# {% include 'partials/content.twig' %} #}
+            {% block content %}{% endblock %}
         </main>
     </div>
 
@@ -32,8 +33,7 @@
     {% include 'partials/footer.twig' %}
 
     {# script #}
-    {# <script src="{{ base_url() }}/vendor/twbs/bootstrap/js/dist/popover.js"></script>  #}
-    <script src="{{ base_url() }}/js/jquery.min.js"></script>
+    <script src="{{ base_url() }}/js/popper.js"></script> 
     <script src="{{ base_url() }}/vendor/twbs/bootstrap/dist/js/bootstrap.min.js"></script>
     <script src="{{ base_url() }}/js/pace.min.js"></script>
     <script src="{{ base_url() }}/js/app.js"></script>

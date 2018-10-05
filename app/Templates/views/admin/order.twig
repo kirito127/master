@@ -1,0 +1,198 @@
+{% extends 'layout.twig' %}
+{% block content %}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i> </a></li>
+        <li class="breadcrumb-item active" aria-current="page">Order Management</li>
+    </ol>
+</nav>
+
+{% include 'partials/content-flash.twig' %}
+
+<div class="container-fluid">
+
+    <!-- nav btn -->
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link active" id="order-tab" data-toggle="tab" href="#order" role="tab" aria-controls="order"
+                aria-selected="true">Home</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" id="dummyorder-tab" data-toggle="tab" href="#dummyorder" role="tab" aria-controls="dummyorder"
+                aria-selected="false">Profile</a>
+        </li>
+    </ul>
+    <!-- end nav btn -->
+
+    <!-- nav content -->
+    <div class="tab-content" id="myTabContent">
+
+        <div class="tab-pane fade show active" id="order" role="tabpanel" aria-labelledby="order-tab">
+            xx
+        </div>
+
+        <div class="tab-pane fade" id="dummyorder" role='modal'>
+            <div class='modal fade' id='addtocartmodal' tabindex='-' role='dialog' aria-hidden='true'>
+                <input type="hidden" id='modalitemname'>
+                <input type="hidden" id='modalitemid'>
+                <div class='modal-dialog' role='document'>
+                    <div class='modal-content'>
+                        <div class='modal-header'>
+                            <h5 class='modal-title text-muted'><i class='fa fa-shopping-cart'></i></h5>
+                            <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+                                <span aria-hidden='true'>&times;</span>
+                            </button>
+                        </div>
+                        <div class='modal-body px-5'>
+                            <div class='form-check p-0'>
+                                <label for='modalqtytext'>Enter quantity *</label>
+                                <input type='number' value='1' class='form-control rounded' id='modalqtytext' placeholder='e.g. 1'>
+                            </div>
+                        </div>
+                        <div class='modal-footer'>
+                            <button type='button' class='btn btn-secondary' data-dismiss='modal'>Close</button>
+                            <button type='button' id='modaladdtocartbtn' class='btn btn-primary'>Add to Cart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-11 col-md-9 col-sm-10">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search for products">
+                            <div class="input-group-append">
+                                <button class="btn btn-secondary" type="button" id="searchbtn">Search</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-1 col-md-3 col-sm-2  py-2 pl-0 m-0">
+
+                        <a data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span class="badge badge-pill badge-danger" id="cart-count">0</span>
+                        </a>
+                        <!-- cart dropdown -->
+                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg" id="cartbtn">
+                            <div class="cart-items">
+                                
+                            </div>
+                            <ul class='list-group list-group-flush'>
+                                <li class='list-group-item d-flex justify-content-end p-2'>
+                                        <button id='cartclearbtn' class="btn btn-secondary btn-sm">Clear</button>
+                                        <button class="btn btn-primary btn-sm ml-2">Checkout</button>
+                                </li>
+                            </ul>
+
+                        </div>
+                        <!-- cart dropdown end -->
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div class="product-container container-fluid p-0 d-flex flex-wrap">
+
+            </div>
+
+        </div>
+    </div>
+    <!-- end nav content -->
+</div>
+
+
+<script type='text/javascript'>
+    $(function () {
+
+        var cart = [];
+        addToCart();
+
+        $('#myTab li a').click(function () {
+            switch ($(this).attr('id')) {
+                case 'dummyorder-tab':
+                    dummyOrdersClick();
+                    break;
+
+                default: break
+            }
+        });
+
+        function dummyOrdersClick() {
+            getProducts();
+        }
+
+        $('div.product-container').on('mouseover', '.card', function () {
+            $(this).css('box-shadow', '0 5px 10px #c2cfd6');
+        });
+
+        $('div.product-container').on('mouseout', '.card', function () {
+            $(this).css('box-shadow', '0 0 0');
+        });
+
+        // card click
+        $('div.product-container').on('click', '.card', function () {
+            var name = $(this).children('.card-body').children('a').html();
+            var id = $(this).children('.card-id').val();
+            $('input#modalitemname').val(name);
+            $('input#modalitemid').val(id);
+            $('#addtocartmodal').modal('show');
+        });
+
+        // add to cart button click 
+        $('button#modaladdtocartbtn').click(function () {
+            var initialqty = $('input#modalqtytext').val();
+            var qty = initialqty === '' || initialqty === null ? 1 : parseInt(initialqty) < 1 ? 1 : parseInt(initialqty);
+            var name = $('input#modalitemname').val();
+            var id = $('input#modalitemid').val();
+            $('input#modalqtytext').val(1);
+            $('#addtocartmodal').modal('hide');
+            addToCart(id, qty, name);
+
+        });
+
+        $('button#cartclearbtn').click(function(){
+            removeCartItem();
+        });
+
+        //ajax
+        function getProducts() {
+            $.ajax({
+                type: 'GET',
+                url: '/papi/product',
+                data: {},
+                success: function (result) {
+                    $('div.product-container').html(result);
+                }
+            });
+        }
+
+        function addToCart(id = null, qty = null, name = null){
+            $.ajax({
+                type: 'GET',
+                url: '/papi/cart/add/'+name+'/'+id+'/'+qty,
+                success: function (result) {
+                    var obj = JSON.parse(result);
+                    console.log(obj);
+                    $('div.cart-items').html(obj.template);
+                    $('span#cart-count').text(obj.size);
+                }
+            });
+        }
+
+        function removeCartItem(id = null){
+            $.ajax({
+                type: 'GET',
+                url: '/papi/cart/remove/'+id,
+                success: function (result) {
+                    addToCart();
+                    console.log(result);
+                }
+            });
+        }
+
+
+
+    });
+</script>
+{% endblock %}

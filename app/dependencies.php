@@ -48,21 +48,33 @@ $container['Client'] = function($container){
 };
 
 //guzzle dependency
-$container['HttpClient'] = function ($container) {
-    $client = new \GuzzleHttp\Client();
-    return $client;
-};
+// $container['guzzlehttp'] = function ($container) {
+//     $client = new \GuzzleHttp\Client();
+//     return $client;
+// };
 
 $container['AuthController'] = function($container){
     return new \App\Controllers\Auth\AuthController($container);
 };
 
 $container['DashboardController'] = function($container){
-    return new \App\Controllers\DashboardController($container);
+    return new \App\Controllers\Admin\DashboardController($container);
+};
+
+$container['ProductController'] = function($container){
+    return new \App\Controllers\Admin\ProductController($container);
+};
+
+$container['OrderController'] = function($container){
+    return new \App\Controllers\Admin\OrderController($container);
 };
 
 $container['ApiController'] = function($container){
     return new \App\Controllers\ApiController($container);
+};
+
+$container['PrivateApiController'] = function($container){
+    return new \App\Controllers\PrivateApiController($container);
 };
 
 $container['validator'] = function($container){
@@ -81,5 +93,9 @@ $app->add($container->csrf);
 
 $container['passwordhasher'] = function($container){
     return new \App\Auth\PasswordHash(8, TRUE);
+};
+
+$container['woocommerce'] = function($container){
+    return new \Automattic\WooCommerce\Client(null, null, null, null);
 };
 
