@@ -65,8 +65,8 @@ $container['ProductController'] = function($container){
     return new \App\Controllers\Admin\ProductController($container);
 };
 
-$container['OrderController'] = function($container){
-    return new \App\Controllers\Admin\OrderController($container);
+$container['FlashSaleController'] = function($container){
+    return new \App\Controllers\Admin\FlashSaleController($container);
 };
 
 $container['ApiController'] = function($container){

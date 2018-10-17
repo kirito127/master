@@ -1,6 +1,6 @@
 <?php
 namespace App\Controllers;
-
+use App\Models\User;
 class PrivateApiController extends Controller{
     
     protected $container;
@@ -16,72 +16,124 @@ class PrivateApiController extends Controller{
         );
     }
 
-    public function getProducts(){
-        // return json_encode($this->woocommerce->get('products?category=1446')); filter by category id is working
-        $productArr = $this->woocommerce->get('products?status=publish&per_page=5');
-        $template = '';
-        foreach($productArr as $product){
-            $name = $product->name;
-            $id = $product->id;
-            $reg = number_format((float)$product->regular_price, 2);
-            $sale = $product->sale_price ? '₱'.  number_format((float)$product->sale_price, 2) : '-';
-            $img = $product->images[0]->src;
-            $template .= "<div class='card mx-1' style='max-width:11.5rem;' data-toggle='modal'>
-                        <input type='hidden' class='card-id' value='$id'>
-                        <img class='card-img-top img-rounded' style='max-height:200px' src='$img' alt='x'>
-                        <div class='card-body p-1'>
-                            <a href='#' class='card-text text-primary my-0'>$name</a><br>
-                            <small class='card-text m-0 text-muted'>ID : $id</small><br>
-                            <small class='card-text m-0'>Regular Price : ₱$reg</small><br>
-                            <small class='card-text m-0'>Sale Price : $sale</small>
+    protected function template($id, $img, $name, $reg, $sale){
+        return  "<div class='card product border-white text-white animated fadeIn rounded m-1'>
+                    <input type='hidden' class='card-id' value='$id'>
+                    <input type='hidden' class='card-name' value='$name'>
+                    <img class='card-img' src='$img' alt='Card image'>
+                    <div class='card-img-overlay product p-0 d-flex align-items-stretch'>
+                        <div class='container p-2 m-0'>
+                            <strong class='card-text'>$name</strong>
+                            <p class='card-text'>
+                                <small>Regular Price : ₱$reg</small><br>
+                                <small>Sale Price : $sale</small>
+                            </p>
                         </div>
-                        </div>";
+                    </div>
+                </div>";          
+    }
+
+    protected function assembleProduct($productArr){
+        $template = '';
+        if($productArr){
+            foreach($productArr as $product){
+                $name = $product->name;
+                $id = $product->id;
+                $reg = number_format((float)$product->regular_price, 2);
+                $sale = $product->sale_price ? '₱'.  number_format((float)$product->sale_price, 2) : '-';
+                $img = $product->images[0]->src;
+                $template .= $this->template($id, $img, $name, $reg, $sale);
+            }
+        }else{
+            $template = "<div class='alert alert-danger'>No product found.</div>";
         }
         return $template;
     }
 
-    public function addToCart($req, $res, $arg)
-    {
-        $template ='';
-        if(!isset($_SESSION['cart'])) $_SESSION['cart'] = array();
+    public function getProducts($req, $res, $arg){
+        $filter =  !isset($arg['filter']) ?: $arg['filter'];
+        $productArr = $this->woocommerce->get('products',array(
+            'page'      => 1,
+            'status'    => 'publish',
+            'per_page'  => $arg['limit'],
+            'search'    => $filter,
+        ));
 
-        if(empty($arg)){
-            $_SESSION['cart'][] = array(
-                'id' => $arg['id'],'qty' => $arg['qty'],'name' => $arg['name']
-            );
-        }
+        $result = array(
+            'template'  =>  $this->assembleProduct($productArr),
+            'status'    =>  $productArr ? true : false,
+        );
 
-        $sum = array_reduce( $_SESSION['cart'], function ($a, $b) {
-            isset($a[$b['id']]) ? $a[$b['id']]['qty'] += $b['qty'] : $a[$b['id']] = $b;  
-            return $a;
-        });
-        $_SESSION['cart'] = array_values($sum);
-
-        foreach($_SESSION['cart'] as $item){
-            $template .="<ul class='list-group list-group-flush'>
-                            <input type='hidden' value='".$item['id']."'>
-                            <li class='list-group-item'>
-                                <span style='cursor:pointer' class='float-right text-danger'><i class='fa fa-trash'></i></span>
-                                <small class='text-dark'>".$item['name']."</small><br>
-                                <small class='text-muted'>Qty: <span id='qtytext'>".$item['qty']."</span></small>
-                            </li>
-                        </ul>";
-        }
-        return json_encode(array('template' => $template, 'size' => array_sum(array_column($_SESSION['cart'], 'qty'))));
+        return json_encode($result);
     }
 
-    public function removeToCart($req, $res, $arg){
-        if(empty($arg)){
-            $_SESSION['cart'] = array();
-            return 'all';
+    public function appendProducts($req, $res, $arg){
+        $filter =  !isset($arg['filter']) ?: $arg['filter'];
+        $productArr = $this->woocommerce->get('products',array(
+            'page'      => $arg['page'],
+            'status'    => 'publish',
+            'per_page'  =>  $arg['limit'],
+            'search'    => $filter,
+        ));
+        
+        $result = array(
+            'template'  =>  $this->assembleProduct($productArr),
+            'status'    =>  $productArr ? true : false,
+        );
 
-        }else{
-            foreach($_SESSION['cart'] as $key => $value){
-                if($key['id'] == $arg['id']){
-                    unset($_SESSION['cart'][$key]);
-                }
-            }
-            return 'all '. $arg['id'];
+        return json_encode($result);
+    }
+
+    public function extractCartSession(){
+        $new = array(); $cart = $_SESSION['cart']; 
+        foreach($cart as $item){
+            $new[] = array(
+                'product_id' => $item['id'],
+                'quantity'  =>  $item['qty']
+            );
         }
+        return $new;
+    } 
+
+    protected function billingUserDetail(){
+        $data = array(
+            'payment_method' => 'dragonpay',
+            'payment_method_title' => 'Dragonpay Online Payment',
+            'set_paid' => true,
+            'billing' => array(
+                'first_name' => 'John',
+                'last_name' => 'Doe',
+                'address_1' => '969 Market',
+                'address_2' => '',
+                'city' => 'San Francisco',
+                'state' => 'CA',
+                'postcode' => '94103',
+                'country' => 'PH',
+                'email' => 'john.doe@example.com',
+                'phone' => '(555) 555-5555'
+            ),
+            'shipping' => array(
+                'first_name' => 'John',
+                'last_name' => 'Doe',
+                'address_1' => '969 Market',
+                'address_2' => '',
+                'city' => 'San Francisco',
+                'state' => 'CA',
+                'postcode' => '94103',
+                'country' => 'US'
+            ),
+            'line_items' => $this->extractCartSession(),
+        );
+        return $data;
+    }
+
+    public function checkout(){
+       $result = $this->woocommerce->post('orders', $this->billingUserDetail());
+       $this->getProducts();
+       var_dump($result);
+    }
+
+    protected function clearCart(){
+        $_SESSION['cart'] = array();
     }
 }

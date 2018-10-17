@@ -1,0 +1,24 @@
+{
+  "name": "philter",
+  "description": "Philter is a JS plugin giving you the power to control CSS filters with HTML attributes",
+  "main": "dist/philter.js",
+  "moduleType": "globals",
+  "keywords": [
+    "filters",
+    "css",
+    "html",
+    "js",
+    "javascript",
+    "philter",
+    "plugin"
+  ],
+  "authors": [
+    "Liudas Dzisevicius <liudas.dzisevicius@gmail.com>"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "bower_components",
+    "CONTRIBUTING.md",
+    "CHANGELOG.md"
+  ]
+}

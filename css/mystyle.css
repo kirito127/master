@@ -1,0 +1,19 @@
+
+input[type="search"]::-webkit-search-cancel-button {
+/*Bootstrap 3 override*/
+-webkit-appearance: searchfield-cancel-button !important;
+}
+
+
+div.card-img-overlay.product{
+    background-image: linear-gradient(
+        to bottom right, 
+        rgba(90, 22, 81, 0.83), 
+        rgba(213, 73, 111, 0.13)
+    );
+}
+div.card.product{
+    overflow:hidden;
+    width:11.5rem;
+    max-height:11.5rem;
+}

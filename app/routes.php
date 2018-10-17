@@ -26,7 +26,7 @@
     $app->group('', function(){
         $this->get('/','DashboardController:index')->setName('dashboard');
         $this->get('/product','ProductController:index')->setName('product');
-        $this->get('/orders','OrderController:index')->setName('order');
+        $this->get('/flashsale','FlashSaleController:index')->setName('flashsale');
     })->add(new AuthMiddleWare($container));
 
 
@@ -44,9 +44,13 @@
     //  ******* END API ROUTES  ******* //
 
     //  ******* PRIVATE API ROUTES  ******* //
-    $app->get('/papi/product','PrivateApiController:getProducts');
-    $app->get('/papi/cart/add/{name}/{id}/{qty}','PrivateApiController:addToCart');
-    $app->get('/papi/cart/remove/{id}','PrivateApiController:removeToCart');
+    $app->get('/papi/product/append/{limit}/{page}[/{filter}]','PrivateApiController:appendProducts');
+    $app->get('/papi/product/{limit}[/{filter}]','PrivateApiController:getProducts');
+    $app->get('/papi/basket/remove/{id}','FlashSaleController:removeToBasket');
+    $app->get('/papi/basket/save','FlashSaleController:saveBasket');
+    $app->get('/papi/basket/add/id={id}/name={name}','FlashSaleController:addToBasket');
+    $app->get('/papi/basket','FlashSaleController:loadBasket');
+    $app->get('/papi/checkout','PrivateApiController:checkout');
 
     //  ******* ENDPRIVATE API ROUTES  ******* //
 
