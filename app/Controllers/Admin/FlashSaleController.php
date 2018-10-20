@@ -7,69 +7,64 @@ use Slim\Views\Twig as View;
 
 class FlashSaleController extends Controller{
     
+    protected function datenow(){
+        return date("Y-m-d H:i:s");
+    }
+
     public function index($request, $response){
         return $this->view->render($response, 'admin/flashsale.twig');
     }
 
-    // public function addToCart($req, $res, $arg){
-    //     if(!isset($_SESSION['cart']) || $_SESSION['cart'] == null) $_SESSION['cart'] = array();
+    public function saveBasket($request, $response){
 
-    //     $_SESSION['cart'][] = array(
-    //         'id' => $arg['id'],'qty' => $arg['qty'],'name' => $arg['name']
-    //     );
-    //     $_SESSION['cart'] = $this->mergeDuplicateItems($_SESSION['cart']);
+        $success = '<div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>Perfect!</strong> Products are successfully saved and ready to be schedule.
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>';
+        try {  
+            $basketarr = $this->basketToArray();
+            $create = FlashSale::insert($basketarr);
+        } catch (\Illuminate\Database\QueryException $e) {
+            return  $e;
+        } catch (\Exception $e) {
+            return  $e;
+        }
+        return json_encode($create);
 
-    //     return $this->loadCart();
-    // }
+    }
 
-    // protected function mergeDuplicateItems($arr){
-    //     $sum = array_reduce( $arr, function ($a, $b) {
-    //         isset($a[$b['id']]) ? $a[$b['id']]['qty'] += $b['qty'] : $a[$b['id']] = $b;  
-    //         return $a;
-    //     });
-    //     return array_values($sum);
-    // }
+    protected function clearCart(){
+        $_SESSION['cart'] = array();
+    }
 
-    // public function loadCart(){
-    //     $template ='';
-    //     if(count($_SESSION['cart'])){
-    //         foreach($_SESSION['cart'] as $item){
-    //             $template .="<ul class='list-group list-group-flush'>
-    //                             <li class='list-group-item'>
-    //                                 <span id='".$item['id']."' style='cursor:pointer' class='btn-trash float-right text-danger'><i class='fa fa-trash'></i></span>
-    //                                 <small class='text-dark'>".$item['name']."</small><br>
-    //                                 <small class='text-muted'>Qty: <span id='qtytext'>".$item['qty']."</span></small>
-    //                             </li>
-    //                         </ul>";
-    //         }
-    //         $template   .=  "<ul class='list-group list-group-flush cart-btn'>
-    //                             <li class='list-group-item d-flex justify-content-end p-2'>
-    //                                 <button id='cartclearbtn' class='btn btn-secondary btn-sm'>Clear</button>
-    //                                 <button id='cartcheckoutbtn' class='btn btn-primary btn-sm ml-2'>Checkout</button>
-    //                             </li>
-    //                         </ul>";
-    //     }else{
-    //         $template = "<ul class='list-group list-group-flush'>
-    //                         <li class='list-group-item'>
-    //                             <span>Cart is empty.</span>
-    //                         </li>
-    //                     </ul>";
-    //     }
-    //     return json_encode(array('template' => $template, 'size' => array_sum(array_column($_SESSION['cart'], 'qty'))));
-    // }
+    public function extractCartSession(){
+        $new = array(); $cart = $_SESSION['cart']; 
+        foreach($cart as $item){
+            $new[] = array(
+                'product_id' => $item['id'],
+                'quantity'  =>  $item['qty']
+            );
+        }
+        return $new;
+    } 
 
-    // public function saveBasket(){
-    //     $create = FlashSale::create([
-    //         'Product_Id' => 1,
-    //         'User_Id' => 1,
-    //         'status' => 'pending',
-    //         'start_date' => 'now()',
-    //         'end_date' => 'now()',//date("Y-m-d H:i:s"),
-    //         'sale_price' => 1000.00,
-    //         'custom_sale_price' => 900.00
-    //     ]);
-    //     var_dump($create);
-    // }
+    protected function basketToArray(){
+        $ids = array_column($_SESSION['basket'], 'id');
+        $products = $this->container->Woocommerce->getProductsByIds(implode(',', $ids));
+        $itemarr =array();
+        foreach($products as $product){
+            $itemarr[] = array(
+                'Product_Id'        => $product->id,
+                'user_Id'           => $_SESSION['userid'],     
+                'status'            => 'Pending',
+                'sale_price'        => $product->sale_price,
+                'custom_sale_price' => 0,
+            );
+        }   
+        return $itemarr;
+    }
 
     public function addToBasket($req, $res, $arg){
         if(!isset($_SESSION['basket']) || $_SESSION['basket'] == null) $_SESSION['basket'] = array();
@@ -108,7 +103,6 @@ class FlashSaleController extends Controller{
                                 </li>
                             </ul>";
             }
-
             $template  .=  "<ul class='list-group list-group-flush basket-btn'>
                                 <li class='list-group-item p-2 d-flex justify-content-end'>
                                     <button id='basketclearbtn' class='btn btn-secondary btn-sm rounded'>Clear</button>
@@ -125,9 +119,6 @@ class FlashSaleController extends Controller{
         return json_encode(array('template' => $template, 'size' => count($arr)));
     }
 
-
-
-
     public function removeToBasket($req, $res, $arg){
         $id = $arg['id'];
         if($arg['id']){
@@ -136,6 +127,101 @@ class FlashSaleController extends Controller{
             $_SESSION['basket'] = array();
         }
     }
+    
+    protected function productCardTemp($id, $img, $name, $reg, $sale){
+        return  "<div class='card product border-white text-white animated fadeIn rounded m-1'>
+                    <input type='hidden' class='card-id' value='$id'>
+                    <input type='hidden' class='card-name' value='$name'>
+                    <img class='card-img' src='$img' alt='Card image'>
+                    <div class='card-img-overlay product p-0 d-flex align-items-stretch'>
+                        <div class='container p-2 m-0'>
+                            <strong class='card-text'>$name</strong>
+                            <p class='card-text'>
+                                <small>Regular Price : ₱$reg</small><br>
+                                <small>Sale Price : $sale</small>
+                            </p>
+                        </div>
+                    </div>
+                </div>";          
+    }
+
+    protected function assembleProduct($productArr){
+        $template = '';
+        if($productArr){
+            foreach($productArr as $product){
+                $name = $product->name;
+                $id = $product->id;
+                $reg = number_format((float)$product->regular_price, 2);
+                $sale = $product->sale_price ? '₱'.  number_format((float)$product->sale_price, 2) : '-';
+                $img = $product->images[0]->src;
+                $template .= $this->productCardTemp($id, $img, $name, $reg, $sale);
+            }
+        }else{
+            $template = "<div class='alert alert-danger'>No product found.</div>";
+        }
+        return $template;
+    }
+
+    public function getProducts($req, $res, $arg){
+        try{
+            $filter =  !isset($arg['filter']) ?: $arg['filter'];
+            $productArr = $this->container->Woocommerce->getProducts(array(
+                'page'      => 1,
+                'status'    => 'publish',
+                'per_page'  => $arg['limit'],
+                'search'    => $filter,
+            ));
+
+            $result = array(
+                'template'  =>  $this->assembleProduct($productArr),
+                'status'    =>  $productArr ? true : false,
+            );
+        } catch (\Illuminate\Database\QueryException $e) {
+            return  $e;
+        }catch(\Exception $e){
+            return $e;
+        }
+        return json_encode($result);
+    }
+
+    protected function billingUserDetail(){
+        $data = array(
+            'payment_method' => 'dragonpay',
+            'payment_method_title' => 'Dragonpay Online Payment',
+            'set_paid' => true,
+            'billing' => array(
+                'first_name' => 'John',
+                'last_name' => 'Doe',
+                'address_1' => '969 Market',
+                'address_2' => '',
+                'city' => 'San Francisco',
+                'state' => 'CA',
+                'postcode' => '94103',
+                'country' => 'PH',
+                'email' => 'john.doe@example.com',
+                'phone' => '(555) 555-5555'
+            ),
+            'shipping' => array(
+                'first_name' => 'John',
+                'last_name' => 'Doe',
+                'address_1' => '969 Market',
+                'address_2' => '',
+                'city' => 'San Francisco',
+                'state' => 'CA',
+                'postcode' => '94103',
+                'country' => 'US'
+            ),
+            'line_items' => $this->extractCartSession(),
+        );
+        return $data;
+    }
+
+    public function checkout(){
+       $result = $this->woocommerce->post('orders', $this->billingUserDetail());
+       $this->getProducts();
+       var_dump($result);
+    }
+
 }
 
 ?>

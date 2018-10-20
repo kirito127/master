@@ -53,6 +53,11 @@ $container['Client'] = function($container){
 //     return $client;
 // };
 
+$container['Dagger'] = function($container){
+    return new \App\Controllers\Dagger($container);
+};
+
+
 $container['AuthController'] = function($container){
     return new \App\Controllers\Auth\AuthController($container);
 };
@@ -69,7 +74,7 @@ $container['FlashSaleController'] = function($container){
     return new \App\Controllers\Admin\FlashSaleController($container);
 };
 
-$container['ApiController'] = function($container){
+$container['Woocommerce'] = function($container){
     return new \App\Controllers\ApiController($container);
 };
 
@@ -95,7 +100,8 @@ $container['passwordhasher'] = function($container){
     return new \App\Auth\PasswordHash(8, TRUE);
 };
 
-$container['woocommerce'] = function($container){
-    return new \Automattic\WooCommerce\Client(null, null, null, null);
-};
+// $container['woocommerce'] = function($container){
+//     return new \Automattic\WooCommerce\Client(null, null, null, null);
+// };
+
 

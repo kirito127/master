@@ -275,9 +275,10 @@
                 type: 'GET',
                 url: '/papi/product/' + limit + '/' + filter,
                 success: function (result) {
-                    var obj = JSON.parse(result);
-                    $('div.product-container').html(obj.template);
-                    $('button#loadmorebtn').css('display', obj.status ? 'block' : 'none');
+                   var obj = JSON.parse(result);
+                     $('div.product-container').html(obj.template);
+                   $('button#loadmorebtn').css('display', obj.status ? 'block' : 'none');
+                    //console.log(result);
                 }
             });
         }

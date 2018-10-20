@@ -10,10 +10,10 @@
                 ],
                 'db' => [
                     'driver'    =>  'mysql',
-                    'host'      =>  'localhost',
+                    'host'      =>  'alla.ph',
                     'database'  =>  'dealahos_alla',
-                    'username'  =>  'root',
-                    'password'  =>  '',
+                    'username'  =>  'dealahos_user',
+                    'password'  =>  'kirito127',
                     'charset'   =>  'utf8',
                     'collation' =>  'utf8_unicode_ci',
                     'prefix'    =>  'wpfw_',

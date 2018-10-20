@@ -44,13 +44,13 @@
     //  ******* END API ROUTES  ******* //
 
     //  ******* PRIVATE API ROUTES  ******* //
-    $app->get('/papi/product/append/{limit}/{page}[/{filter}]','PrivateApiController:appendProducts');
-    $app->get('/papi/product/{limit}[/{filter}]','PrivateApiController:getProducts');
+    $app->get('/papi/product/append/{limit}/{page}[/{filter}]','FlashSaleController:getProducts');
+    $app->get('/papi/product/{limit}[/{filter}]','FlashSaleController:getProducts');
     $app->get('/papi/basket/remove/{id}','FlashSaleController:removeToBasket');
     $app->get('/papi/basket/save','FlashSaleController:saveBasket');
     $app->get('/papi/basket/add/id={id}/name={name}','FlashSaleController:addToBasket');
     $app->get('/papi/basket','FlashSaleController:loadBasket');
-    $app->get('/papi/checkout','PrivateApiController:checkout');
+    $app->get('/papi/checkout','FlashSaleController:checkout');
 
     //  ******* ENDPRIVATE API ROUTES  ******* //
 
