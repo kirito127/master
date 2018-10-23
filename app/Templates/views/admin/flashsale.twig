@@ -36,6 +36,9 @@
 
         <!-- product-tab -->
         <div class="tab-pane fade" id="product" role="tabpanel" aria-labelledby="product-tab">
+            <!-- custom container -->
+            <div class="alert-container"></div>
+
             <!-- product tab alert -->
             <div class="alert alert-success py-2 alert-dismissible fade show" role="alert">
                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -121,6 +124,7 @@
 
         <!-- schedule-tab -->
         <div class="tab-pane fade" id="schedule" role="tabpanel" aria-labelledby="schedule-tab">
+        
         </div>
         <!-- end schedule tab -->
 
@@ -340,7 +344,7 @@
                 type: 'GET',
                 url: '/papi/basket/save',
                 success: function (result) {
-                    console.log(result);
+                    $('.alert-container').html(result);
                 }
             });
         }

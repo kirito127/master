@@ -38,18 +38,17 @@ class Auth{
         return $this->check() ? User::find($_SESSION['userid']) : null;
     }
 
-    // public function role(){
-    //     $id = $this->user()->ID;
-    //     $role = User::join('usermeta', 'users.ID', '=', 'usermeta.user_id')
-    //     ->select('usermeta.meta_value')
-    //     ->where([
-    //         ['usermeta.meta_key', '=', 'wpfw_capabilities'],
-    //         ['users.ID', '=', 4]
-    //     ])->first();
-    //     $role = unserialize($role->meta_value);
-    //     $array = array_keys($role);
-    //     return $array;
-    // }
+    public function role(){
+        if(!isset($_SESSION['userid'])) return false;
+        $role = User::join('usermeta', 'users.ID', '=', 'usermeta.user_id')
+        ->select('usermeta.meta_value')
+        ->where([
+            ['usermeta.meta_key', '=', 'wpfw_capabilities'],
+            ['users.ID', '=', $_SESSION['userid']]
+        ])->first();
+        $role = unserialize($role->meta_value);
+        return array_keys($role)[0];
+    }
 
 
 }

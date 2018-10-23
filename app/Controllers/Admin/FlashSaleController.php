@@ -6,33 +6,27 @@ use App\Models\FlashSale;
 use Slim\Views\Twig as View;
 
 class FlashSaleController extends Controller{
-    
-    protected function datenow(){
-        return date("Y-m-d H:i:s");
-    }
 
     public function index($request, $response){
         return $this->view->render($response, 'admin/flashsale.twig');
     }
 
     public function saveBasket($request, $response){
+        $err = $this->container->Dagger->alertTemp('danger', 
+        '<strong>Oops!</strong> Something unexpected happened, Please try again.');
+        $success = $this->container->Dagger->alertTemp('success', 
+        "<strong>Perfect!</strong> You've successfully saved the products");
 
-        $success = '<div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <strong>Perfect!</strong> Products are successfully saved and ready to be schedule.
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>';
         try {  
             $basketarr = $this->basketToArray();
             $create = FlashSale::insert($basketarr);
         } catch (\Illuminate\Database\QueryException $e) {
-            return  $e;
+            return  $err;
         } catch (\Exception $e) {
-            return  $e;
+            return  $err;
         }
-        return json_encode($create);
-
+        clearCart();
+        return $create ? $success : $err;
     }
 
     protected function clearCart(){

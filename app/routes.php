@@ -5,6 +5,7 @@
     use Psr\Http\Message\ResponseInterface as Response;
     use App\Middleware\AuthMiddleWare;
     use App\Middleware\GuestMiddleWare;
+    use App\Middleware\VendorMiddleWare;
 
     $app->add(function (Request $request, Response $response, callable $next) {
         $uri = $request->getUri();
@@ -29,6 +30,10 @@
         $this->get('/flashsale','FlashSaleController:index')->setName('flashsale');
     })->add(new AuthMiddleWare($container));
 
+    $app->group('', function(){
+        $this->get('/merchant','DashboardController:index')->setName('vendor.dashboard');
+        $this->get('/merchant/products','ProductsController:index')->setName('vendor.products');
+    })->add(new VendorMiddleware($container));
 
     $app->group('', function(){
         $this->get('/auth/login','AuthController:getLogin')->setName('auth.login');

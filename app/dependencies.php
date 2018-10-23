@@ -11,6 +11,16 @@ $container['db'] = function($container) use ($capsule){
 };
 
 
+//override 404 page
+$container['notFoundHandler'] = function ($c) {
+    return function ($request, $response) use ($c) {
+        return $c['view']->render($response->withStatus(404), '404.twig', [
+            "myMagic" => "Let's roll"
+        ]);
+    };
+};
+
+
 // auth dependency
 $container['auth'] = function($container){
     return new \App\Auth\Auth($container);
@@ -33,7 +43,7 @@ $container['view'] = function ($container) {
     $view->getEnvironment()->addGlobal('auth', [
         'check' => $container->auth->check(),
         'user'  => $container->auth->user(),
-        // 'role'  => $container->auth->role(),
+        'role'  => $container->auth->role(),
     ]);
 
     $view->getEnvironment()->addGlobal('flash', $container->flash);
@@ -80,6 +90,15 @@ $container['Woocommerce'] = function($container){
 
 $container['PrivateApiController'] = function($container){
     return new \App\Controllers\PrivateApiController($container);
+};
+
+//vendor dep
+$container['DashboardController'] = function($container){
+    return new \App\Controllers\Vendor\DashboardController($container);
+};
+
+$container['ProductsController'] = function($container){
+    return new \App\Controllers\Vendor\ProductsController($container);
 };
 
 $container['validator'] = function($container){

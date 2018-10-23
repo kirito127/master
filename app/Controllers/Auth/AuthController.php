@@ -35,11 +35,18 @@ class AuthController extends Controller{
         );
 
         if(!$auth){
-            $this->flash->addMessage('login-error', 'The username/email or password youve enter is incorrect, Please try again.');
+            $this->flash->addMessage('login-error', "The username/email or password you've enter is incorrect, Please try again.");
             return $response->withRedirect($this->router->pathFor('auth.login'));
-        }
+        }else{
 
-        return $response->withRedirect($this->router->pathFor('dashboard'));
+            if($this->auth->role() == 'dc_vendor'){
+                return $response->withRedirect($this->router->pathFor('vendor.dashboard'));
+            }elseif($this->auth->role() == 'administrator'){
+                return $response->withRedirect($this->router->pathFor('dashboard'));
+            }
+
+        }
+        
     }
 
 }
