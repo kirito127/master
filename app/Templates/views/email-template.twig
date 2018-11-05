@@ -1,0 +1,141 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+
+<body style="margin: 10px 0; padding: 0; font-family:Trebuchet MS; background-color: #fefefe;">
+
+
+    <table style="box-shadow:0px 2px 5px lightgray;" align="center" cellpadding="0" cellspacing="0" width="600px" style="border-collapse: collapse;">
+        <tr>
+            <td align="center" bgcolor="#70bbd9" style="">
+                <img src="http://sevendeal.net/wp-content/uploads/2016/05/banner-f-1.jpg" alt="Creating Email Magic" height="230" style="display: block;"
+                />
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 20px; background-color:white;color:#363636;">
+
+                <table cellpadding="0" cellspacing="0" width="100%">
+                    <tr>
+                        <td>
+                            <table  style=" border:2px dashed lightgray" cellpadding="0" cellspacing="0" width="100%">
+                                <tr>
+
+                                    <td style="padding-bottom:px;width:10px;">
+                                        <img style="width:auto;height:260px;display: block; " src="{{ img }}" alt="{{ imgalt }}">
+                                    </td>
+
+                                    <td style="padding:20px;">
+                                        <h3 style="margin-bottom:1px;">{{ name }}</h3>
+                                        <small style="color:dimgray">{{ summary }}</small>
+                                        <div style="height: 5px; width: 85px; background: linear-gradient(to right, #e02c6e, #fa9563); margin-bottom: 10px; margin-top:5px; border-radius:3px"></div>
+
+                                        <table  cellpadding="0" cellspacing="0" width="100%" style="margin-top:8px;">
+                                            <tr >
+                                                <td style="width:40%;">Voucher Code</td>
+                                                <td><b>{{ vouchercode }}</b> </td>
+                                            </tr>
+                                            <tr>
+                                                <td>Amount</td>
+                                                <td>{{ saleprice }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Regular Price</td>
+                                                <td>{{ regularprice }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Discount</td>
+                                                <td>{{ discount }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Payment Method</td>
+                                                <td>{{  paymentmethod }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Ordered Date</td>
+                                                <td>{{ orderdate }}</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Expiration Date</td>
+                                                <td>{{ expirationdate }}</td>
+                                            </tr>
+                                        </table>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td style="padding: 10px 20px;color:#363636;">
+
+                            <!-- <div style="height: 4px; width: 100px; background-color: #fa9563; margin-bottom: 10px; margin-top:"></div> -->
+                            <h3 style="color:#363636;">Dear {{ customername }},</h3>
+
+                            <p style="text-indent: 20px;">{{ note | raw }}</p>
+                        </td>
+                    </tr>
+
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td style="padding: 20px 20px; background: linear-gradient(to right, #e02c6e, #fa9563);">
+                <table cellpadding="0" cellspacing="0" width="100%">
+                    <tr>
+
+                            <!-- <a href="#">
+                                <img  style="display: block;" src="http://sevendeal.net/wp-content/uploads/2018/07/logo-mo-to-baby.png" alt="">
+                            </a> -->
+
+                        <td style="">
+                            <a href="" style="text-decoration:none; color:white;margin:0;">
+                                <img src="https://alla.ph/wp-content/uploads/2018/10/logo-web-new_53ab99a6b64482be01c76733f1c91ec4-compressor.png" alt="logo">
+                            </a><br>
+                                <small style="color:white;margin:0;">Manhattan Garden Parkview Tower 1 Gen. Malvar Avenue, Araneta, Cubao, Quezon City, Philippines</small>
+                        </td>
+
+                        
+
+                        <td width="35%" align="right">
+                            <table>
+                                <tr>
+                                    <td style="width:10px">
+                                        <a href="https://facebook.com/seven7deal" target="_blank">
+                                            <img  style="display: block;" src="https://old.sevendeal.net/wp-content/uploads/2018/07/icons8-facebook-32-1.png"
+                                                alt="">
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="https://twitter.com/7deal_PH"  target="_blank">
+                                            <img  style="display: block;" src="https://old.sevendeal.net/wp-content/uploads/2018/07/icons8-twitter-32.png"
+                                                alt="">
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <a href="https://www.instagram.com/7deal_philippines" target="_blank">
+                                            <img  style="display: block;" src="https://old.sevendeal.net/wp-content/uploads/2018/07/icons8-instagram-32.png"
+                                                alt="">
+                                        </a>
+                                    </td>
+                                </tr>
+                                
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+
+</body>
+
+</html>

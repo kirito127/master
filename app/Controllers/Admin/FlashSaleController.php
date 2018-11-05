@@ -11,6 +11,90 @@ class FlashSaleController extends Controller{
         return $this->view->render($response, 'admin/flashsale.twig');
     }
 
+    public function deleteSchedule($req, $res, $arg){
+        $result = FlashSale::where('id', $arg['id'])->delete();
+        return json_encode($result);
+    }
+
+    protected function assembleSchedule($schedules){
+        $temp = '';
+        if(count($schedules)){
+            foreach($schedules as $schedule){
+                $badge ='';
+
+                switch($schedule['status']){
+                    case 'Pending': $badge='warning'; break;
+                    case 'Success': $badge='success'; break;
+                    case 'Expired': $badge='danger'; break;
+                    default: break;}
+
+                $temp .="<tr id='row". $schedule['id'] ."'>
+                            <td>
+                                <div class='form-check'>
+                                    <label class='form-check-label'>
+                                    <input type='checkbox' value='". $schedule['id'] ."' class='form-check-input'>
+                                    </label>
+                                </div>
+                            </td>
+                            <td>". $schedule['Product_Id'] ."</td><td>". $schedule['User_Id'] ."</td>
+                            <td><small class='badge badge-pill badge-$badge'>". $schedule['status'] ."</small></td>
+                            <td>". $schedule['sale_price'] ."</td><td>". $schedule['custom_sale_price'] ."</td>
+                            <td>". $schedule['start_date'] .' - '. $schedule['end_date'] ."</td>
+                            <td>". $schedule['set_date'] ."</td>
+                            <td>
+                                <button id='". $schedule['id'] ."' class='btn btn-danger btn-sm btn-deleteschedule'><i class='far fa-trash-alt'></i></button>
+                                <button id='". $schedule['id'] ."' class='btn btn-warning btn-sm btn-editschedule'><i class='far fa-edit'></i></button>
+                            </td>
+                        </tr>";
+            }
+        }else{
+            $temp = "<tr class='table-danger text-center'><td colspan='9'>No record found.</td></tr>";
+        }
+
+        return $temp;
+    }
+    public function loadSchedule($req, $res, $arg){
+        $type = $arg['status'];
+        $scheduleArr;
+        switch($type){
+            case 'Success':
+                $scheduleArr = FlashSale::where('status', 'Success')->get();
+            break;
+            case 'Pending':
+                $scheduleArr = FlashSale::where('status', 'Pending')->get();
+            break;
+            case 'Duplicate':
+                //$scheduleArr = FlashSale::where('end_date', '<', $this->container->Dagger->datenow())->get();
+            break;            
+            case 'Expired':
+                $scheduleArr = FlashSale::whereRaw('YEAR(`end_date`) != 0')
+                                        ->where('end_date', '<', $this->container->Dagger->datenow())
+                                        ->where('status', 'Success')->get();                
+            break;
+            default: 
+                $scheduleArr = FlashSale::all();
+            break;
+        }
+
+        return $this->assembleSchedule($scheduleArr);
+    }
+
+    public function appendProducts($req, $res, $arg){
+        $filter =  !isset($arg['filter']) ?: $arg['filter'];
+        $productArr = $this->container->Api->getProducts(array(
+            'page'      => $arg['page'],
+            'status'    => 'publish',
+            'per_page'  =>  $arg['limit'],
+            'search'    => $filter,
+        ));
+        
+        $result = array(
+            'template'  =>  $this->assembleProduct($productArr),
+            'status'    =>  $productArr ? true : false,
+        );
+        return json_encode($result);
+    }
+
     public function saveBasket($request, $response){
         $err = $this->container->Dagger->alertTemp('danger', 
         '<strong>Oops!</strong> Something unexpected happened, Please try again.');
@@ -46,7 +130,7 @@ class FlashSaleController extends Controller{
 
     protected function basketToArray(){
         $ids = array_column($_SESSION['basket'], 'id');
-        $products = $this->container->Woocommerce->getProductsByIds(implode(',', $ids));
+        $products = $this->container->Api->getProductsByIds(implode(',', $ids));
         $itemarr =array();
         foreach($products as $product){
             $itemarr[] = array(
@@ -159,7 +243,7 @@ class FlashSaleController extends Controller{
     public function getProducts($req, $res, $arg){
         try{
             $filter =  !isset($arg['filter']) ?: $arg['filter'];
-            $productArr = $this->container->Woocommerce->getProducts(array(
+            $productArr = $this->container->Api->getProducts(array(
                 'page'      => 1,
                 'status'    => 'publish',
                 'per_page'  => $arg['limit'],
@@ -211,11 +295,9 @@ class FlashSaleController extends Controller{
     }
 
     public function checkout(){
-       $result = $this->woocommerce->post('orders', $this->billingUserDetail());
+       $result = $this->Api->post('orders', $this->billingUserDetail());
        $this->getProducts();
        var_dump($result);
     }
 
 }
-
-?>

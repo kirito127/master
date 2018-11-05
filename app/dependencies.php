@@ -10,6 +10,9 @@ $container['db'] = function($container) use ($capsule){
     return $capsule;
 };
 
+// $escaper = new Twig_Extension_Escaper(false);
+// $container->view->addExtension($escaper);
+
 
 //override 404 page
 $container['notFoundHandler'] = function ($c) {
@@ -51,14 +54,14 @@ $container['view'] = function ($container) {
     return $view;
 };
 
-// woo dependency
-$container['Client'] = function($container){
-    $woocommerce = new Automattic\WooCommerce\Client; 
-    return $woocommerce;
-};
+// // woo dependency
+// $container['Client'] = function($container){
+//     $woocommerce = new Automattic\WooCommerce\Client; 
+//     return $woocommerce;
+// };
 
-//guzzle dependency
-// $container['guzzlehttp'] = function ($container) {
+// //guzzle dependency
+// $container['Guzzle'] = function ($container) {
 //     $client = new \GuzzleHttp\Client();
 //     return $client;
 // };
@@ -84,13 +87,17 @@ $container['FlashSaleController'] = function($container){
     return new \App\Controllers\Admin\FlashSaleController($container);
 };
 
-$container['Woocommerce'] = function($container){
+$container['VoucherController'] = function($container){
+    return new \App\Controllers\Admin\VoucherController($container);
+};
+
+$container['Api'] = function($container){
     return new \App\Controllers\ApiController($container);
 };
 
-$container['PrivateApiController'] = function($container){
-    return new \App\Controllers\PrivateApiController($container);
-};
+// $container['PrivateApiController'] = function($container){
+//     return new \App\Controllers\PrivateApiController($container);
+// };
 
 //vendor dep
 $container['DashboardController'] = function($container){

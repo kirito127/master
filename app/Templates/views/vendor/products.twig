@@ -16,9 +16,25 @@
 
 
 <script type='text/javascript'>
-    $('p').click(function(){
-        alert('hello');
-    })
+   $(function(){
+       
+
+       $('p').click(function(){
+           getVendors();
+       });
+
+        function getVendors(){
+            $.ajax({
+                type: 'GET',
+                url: '/merchant/api/vendor',
+                success: function(result){
+                    console.log(result);
+                }
+            });
+        }
+
+
+   });
 </script>
 
 {% endblock %}

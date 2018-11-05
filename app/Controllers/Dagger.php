@@ -16,8 +16,8 @@ class Dagger extends Controller{
         return $temp;
     }
 
-    public function datenow(){
-        return date("Y-m-d H:i:s");
+    public function datenow($date = null){
+        return $date ? date("Y-m-d H:i:s", $date) : date("Y-m-d H:i:s") ;
     }
 }
 

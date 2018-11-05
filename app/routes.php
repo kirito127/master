@@ -28,6 +28,7 @@
         $this->get('/','DashboardController:index')->setName('dashboard');
         $this->get('/product','ProductController:index')->setName('product');
         $this->get('/flashsale','FlashSaleController:index')->setName('flashsale');
+        $this->get('/voucher','VoucherController:index')->setName('voucher');
     })->add(new AuthMiddleWare($container));
 
     $app->group('', function(){
@@ -49,13 +50,20 @@
     //  ******* END API ROUTES  ******* //
 
     //  ******* PRIVATE API ROUTES  ******* //
-    $app->get('/papi/product/append/{limit}/{page}[/{filter}]','FlashSaleController:getProducts');
+    $app->get('/papi/product/append/{limit}/{page}[/{filter}]','FlashSaleController:appendProducts');
     $app->get('/papi/product/{limit}[/{filter}]','FlashSaleController:getProducts');
     $app->get('/papi/basket/remove/{id}','FlashSaleController:removeToBasket');
     $app->get('/papi/basket/save','FlashSaleController:saveBasket');
     $app->get('/papi/basket/add/id={id}/name={name}','FlashSaleController:addToBasket');
     $app->get('/papi/basket','FlashSaleController:loadBasket');
     $app->get('/papi/checkout','FlashSaleController:checkout');
+    $app->get('/papi/schedule/{status}','FlashSaleController:loadSchedule');
+    $app->get('/papi/schedule/delete/{id}','FlashSaleController:deleteSchedule');
+    $app->get('/api/vendor','ProductsController:getVendor');
+    $app->get('/api/order/{ordernum}','VoucherController:getOrder');
+    $app->get('/api/email/{ordernum}/{vouchercode}/{voucherid}/{fname}/{lname}/{email}/{phone}/{note}','VoucherController:sendEmail');
+
+
 
     //  ******* ENDPRIVATE API ROUTES  ******* //
 

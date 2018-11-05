@@ -1,0 +1,202 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+
+<nav aria-label='breadcrumb'>
+    <ol class='breadcrumb'>
+        <li class='breadcrumb-item'>
+            <a href='/'>
+                <i class='fa fa-home'></i>
+            </a>
+        </li>
+        <li class='breadcrumb-item active' aria-current='page'>Voucher</li>
+    </ol>
+</nav>
+
+{% include 'partials/content-flash.twig' %}
+
+<div class='container-fluid'>
+    <!-- nav btn -->
+    <ul class='nav nav-tabs' id='myTab' role='tablist'>
+        <li class='nav-item'>
+            <a class='nav-link active' id='createvoucher-tab' data-toggle='tab' href='#createvoucher' role='tab'
+                aria-controls='createvoucher' aria-selected='false'>Create Voucher</a>
+        </li>
+        <li class='nav-item'>
+            <a class='nav-link' id='voucherlist-tab' data-toggle='tab' href='#voucherlist' role='tab' aria-controls='voucherlist'
+                aria-selected='false'>Voucher List</a>
+        </li>
+    </ul>
+    <!-- end nav btn -->
+
+    <!-- nav content -->
+    <div class='tab-content' id='myTabContent'>
+
+        <div class='tab-pane fade show active' id='createvoucher' role='tabpanel' aria-labelledby='procreatevoucherduct-tab'>
+            <form class='container'>
+
+                <div class='form-group mt-3'>
+                    <label for='ordernumtxt'>Order Number <span class='text-danger'>*</span></label>
+                    <div class='input-group'>
+                        <input type='number' id='ordernumtxt' class='form-control rounded' placeholder='E.g. 2477'>
+                        <span class='input-group-btn'>
+                            <button id='verifybtn'  class='btn btn-primary' type='button'>Verify</button>
+                        </span><br>
+                    </div>
+                    <small class='form-text text-muted'>Please click the verify button to assure that your order number
+                        exist.</small>
+                </div>
+
+                <div class='form-group'>
+                    <label for='vouchercodetxt'>Voucher Code</label>
+                    <input readonly type='text' class='form-control rounded' id='vouchercodetxt' placeholder='XXXXXXXXXXXX'>
+                    <small class='form-text text-muted'>Voucher code is automatically generated when order number is verified</small>
+                </div>
+
+                <div class='form-group'>
+                    <label for='voucherdrp'>Voucher Products <span class='text-danger'>*</span></label>
+                    <select class='form-control rounded' id='voucherdrp'></select>
+                    <small class='form-text text-muted'>Please select the product you wish to obtain the code.</small>
+                </div>
+
+                <div class='row'>
+                    <div class='col-lg-6 col-md-6 col-sm-6'>
+                        <div class='form-group'>
+                            <label required='' for='fnametxt'>Firstname <span class='text-danger'>*</span></label>
+                            <input type='text' id='fnametxt' class='form-control rounded' placeholder='Enter Firstname'>
+                        </div>
+                    </div>
+                    <div class='col-lg-6 col-md-6 col-sm-6'>
+                        <div class='form-group'>
+                            <label required='' for='lnametxt'>Lastname <span class='text-danger'>*</span></label>
+                            <input type='text' id='lnametxt' class='form-control rounded' placeholder='Enter Lastname'>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='row'>
+                    <div class='col-lg-6 col-md-6 col-sm-6'>
+                        <div class='form-group'>
+                            <label required='' for='emailtxt'>Email <span class='text-danger'>*</span></label>
+                            <input type='email' id='emailtxt' class='form-control rounded' placeholder='Customers Email'>
+                        </div>
+                    </div>
+                    <div class='col-lg-6 col-md-6 col-sm-6'>
+                        <div class='form-group'>
+                            <label for='phonetxt'>Phone Number (optional)</label>
+                            <input type='text' id='phonetxt' class='form-control rounded' placeholder='Customers Phone Number'>
+                        </div>
+                    </div>
+                </div>
+
+                <div class='form-group'>
+                    <label for='exampleFormControlTextarea1'>Note (optional)</label>
+                    <textarea class='form-control rounded' id='notetxt' placeholder='Your note to customer' rows='3'></textarea>
+                </div>
+                
+                <button type='button' id='sendbtn' class='btn btn-primary'><i class='fa fa-send'></i> Send</button>
+                <button type='button' id='clear' class='btn btn-danger'><i class='fa fa-close'></i> Clear</button>
+
+            </form>
+            <div id='ff' class="container"></div>
+        </div>
+
+        <div class='tab-pane fade' id='voucherlist' role='tabpanel' aria-labelledby='voucherlist-tab'>
+        </div>
+
+    </div>
+    <!--end nav content -->
+</div>
+
+<script type='text/javascript'>
+    $(function () {   
+            var ordernum;
+            var vouchercode;
+            var voucherid;
+
+            function generateRandom(min, max, length) {
+                var output = '';
+                for (var i = 0; i < length; i++) {
+                    output += Math.floor(Math.random() * (max - min + 1) + min);
+                }
+                return output;
+            }
+
+            $('#verifybtn').click(function(){
+                ordernum = $('#ordernumtxt').val();
+                if(ordernum){
+                    $('#verifybtn').prop('disabled', true);
+                    getOrder(ordernum);
+                }
+            });
+
+            $('#voucherdrp').change(function(){
+                voucherid = $(this).val();
+                validate();
+            });
+
+            function validate(){
+                var fname = $('#fnametxt').val(); 
+                var lname = $('#lnametxt').val();
+                var email = $('#emailtxt').val();
+                if(fname && lname && email && vouchercode && voucherid && ordernum){
+                    return true;
+                }else{
+                    return false;
+                }
+                return false;
+            }
+
+            $('#sendbtn').click(function(){
+                if(validate()){
+                    var arr = {
+                        'ordernum'   : ordernum,
+                        'vouchercode': vouchercode,
+                        'voucherid'  : voucherid,
+                        'fname'      : $('#fnametxt').val(),
+                        'lname'      : $('#lnametxt').val(),
+                        'email'      : $('#emailtxt').val(),
+                        'phone'      : $('#phonetxt').val() ? $('#phonetxt').val() : 0,
+                        'note'      : $('#notetxt').val() ? $('#notetxt').val() : 0
+                    };
+                    sendVoucher(arr);
+                }else{
+                    alert('Please make sure to fill up all fields with asterisk(*)');
+                }
+            });
+            
+            //ajax
+            function getOrder(ordernum){
+                var code = String(ordernum) + generateRandom(0,9, 12 - String(ordernum).length);
+                $.ajax({
+                    type: 'GET',
+                    url: 'api/order/'+ordernum,
+                    success: function(result){
+                        var obj = JSON.parse(result);
+                        $('#voucherdrp').html(obj.optiontemp);
+                        $('#vouchercodetxt').val(code);
+                        ordernum = ordernum;
+                        vouchercode = code;
+                    },
+                    error: function (xhr, msg) {
+                        console.log(msg + '\n' + xhr.responseText);
+                    }
+                });
+                $('#verifybtn').prop('disabled', false);
+            }
+
+            function sendVoucher(arr){
+                $.ajax({
+                    type: 'GET',
+                    url:  'api/email/'+arr.ordernum+'/'+arr.vouchercode+'/'+arr.voucherid+'/'+arr.fname+'/'+arr.lname+'/'+arr.email+'/'+arr.phone+'/'+arr.note,
+                    success: function(result){
+                        console.log(result);
+                        $('div#ff').html(result);
+                    }
+                });
+            }
+;
+    });
+</script>
+
+{% endblock %}
