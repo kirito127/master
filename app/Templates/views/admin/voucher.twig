@@ -16,6 +16,8 @@
 {% include 'partials/content-flash.twig' %}
 
 <div class='container-fluid'>
+
+    <div id='alert-container'></div>
     <!-- nav btn -->
     <ul class='nav nav-tabs' id='myTab' role='tablist'>
         <li class='nav-item'>
@@ -95,13 +97,29 @@
                 </div>
                 
                 <button type='button' id='sendbtn' class='btn btn-primary'><i class='fa fa-send'></i> Send</button>
-                <button type='button' id='clear' class='btn btn-danger'><i class='fa fa-close'></i> Clear</button>
+                <button type='button' id='clearbtn' class='btn btn-danger'><i class='fa fa-close'></i> Clear</button>
 
             </form>
-            <div id='ff' class="container"></div>
         </div>
 
         <div class='tab-pane fade' id='voucherlist' role='tabpanel' aria-labelledby='voucherlist-tab'>
+
+            <div class="row">
+                <div class="col-lg-3">
+                    <label for="showdrp">Show</label>
+                    <select class="form-control rounded" id="showdrp">
+                </div>
+                <div class="col-lg-3">
+                    <label for="vendordrp">Mechants</label>
+                    <select class="form-control rounded" id="vendordrp">
+                </div>
+                <div class="col-lg-3"></div>
+                <div class="col-lg-3"></div>
+            </div>
+
+
+            </select>
+            
         </div>
 
     </div>
@@ -114,20 +132,16 @@
             var vouchercode;
             var voucherid;
 
-            function generateRandom(min, max, length) {
-                var output = '';
-                for (var i = 0; i < length; i++) {
-                    output += Math.floor(Math.random() * (max - min + 1) + min);
-                }
-                return output;
-            }
-
             $('#verifybtn').click(function(){
                 ordernum = $('#ordernumtxt').val();
                 if(ordernum){
                     $('#verifybtn').prop('disabled', true);
                     getOrder(ordernum);
                 }
+            });
+            
+            $('clearbtn').click(function(){
+                clear();
             });
 
             $('#voucherdrp').change(function(){
@@ -155,7 +169,7 @@
                         'voucherid'  : voucherid,
                         'fname'      : $('#fnametxt').val(),
                         'lname'      : $('#lnametxt').val(),
-                        'email'      : $('#emailtxt').val(),
+                        'email'      : window.btoa($('#emailtxt').val()),
                         'phone'      : $('#phonetxt').val() ? $('#phonetxt').val() : 0,
                         'note'      : $('#notetxt').val() ? $('#notetxt').val() : 0
                     };
@@ -164,6 +178,17 @@
                     alert('Please make sure to fill up all fields with asterisk(*)');
                 }
             });
+
+            function clear(){
+                $('#ordernumtxt').val('');
+                $('#vouchercodetxt').val('');
+                $('#voucherdrp').html('');
+                $('#fnametxt').val('');
+                $('#lnametxt').val('');
+                $('#emailtxt').val('');
+                $('#phonetxt').val('');
+                $('#notetxt').val('');
+            }
             
             //ajax
             function getOrder(ordernum){
@@ -173,9 +198,14 @@
                     url: 'api/order/'+ordernum,
                     success: function(result){
                         var obj = JSON.parse(result);
-                        $('#voucherdrp').html(obj.optiontemp);
-                        $('#vouchercodetxt').val(code);
-                        ordernum = ordernum;
+                        if(obj.status){
+                            $('#voucherdrp').html(obj.temp);
+                            $('#vouchercodetxt').val(code);
+                            ordernum = ordernum;
+                        }else{
+                            $('div#alert-container').html(obj.temp);
+                        }
+
                         vouchercode = code;
                     },
                     error: function (xhr, msg) {
@@ -190,11 +220,16 @@
                     type: 'GET',
                     url:  'api/email/'+arr.ordernum+'/'+arr.vouchercode+'/'+arr.voucherid+'/'+arr.fname+'/'+arr.lname+'/'+arr.email+'/'+arr.phone+'/'+arr.note,
                     success: function(result){
-                        console.log(result);
-                        $('div#ff').html(result);
+                        var obj = JSON.parse(result);
+                        $('div#alert-container').html(obj.temp);                        
+                        if(obj.status){
+                            clear();
+                        }
                     }
                 });
             }
+
+
 ;
     });
 </script>

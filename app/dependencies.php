@@ -95,6 +95,10 @@ $container['Api'] = function($container){
     return new \App\Controllers\ApiController($container);
 };
 
+$container['Email'] = function($container){
+    return new \App\Controllers\EmailController($container);
+};
+
 // $container['PrivateApiController'] = function($container){
 //     return new \App\Controllers\PrivateApiController($container);
 // };

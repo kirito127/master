@@ -34,7 +34,7 @@
 
                                     <td style="padding:20px;">
                                         <h3 style="margin-bottom:1px;">{{ name }}</h3>
-                                        <small style="color:dimgray">{{ summary }}</small>
+                                        <small style="color:dimgray">{{ summary | raw }}</small>
                                         <div style="height: 5px; width: 85px; background: linear-gradient(to right, #e02c6e, #fa9563); margin-bottom: 10px; margin-top:5px; border-radius:3px"></div>
 
                                         <table  cellpadding="0" cellspacing="0" width="100%" style="margin-top:8px;">
@@ -43,7 +43,7 @@
                                                 <td><b>{{ vouchercode }}</b> </td>
                                             </tr>
                                             <tr>
-                                                <td>Amount</td>
+                                                <td>Sale Price</td>
                                                 <td>{{ saleprice }}</td>
                                             </tr>
                                             <tr>
@@ -58,10 +58,10 @@
                                                 <td>Payment Method</td>
                                                 <td>{{  paymentmethod }}</td>
                                             </tr>
-                                            <tr>
+                                            {# <tr>
                                                 <td>Ordered Date</td>
                                                 <td>{{ orderdate }}</td>
-                                            </tr>
+                                            </tr> #}
                                             <tr>
                                                 <td>Expiration Date</td>
                                                 <td>{{ expirationdate }}</td>
@@ -96,7 +96,7 @@
                             </a> -->
 
                         <td style="">
-                            <a href="" style="text-decoration:none; color:white;margin:0;">
+                            <a href="#" style="text-decoration:none; color:white;margin:0;">
                                 <img src="https://alla.ph/wp-content/uploads/2018/10/logo-web-new_53ab99a6b64482be01c76733f1c91ec4-compressor.png" alt="logo">
                             </a><br>
                                 <small style="color:white;margin:0;">Manhattan Garden Parkview Tower 1 Gen. Malvar Avenue, Araneta, Cubao, Quezon City, Philippines</small>

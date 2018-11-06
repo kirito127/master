@@ -1,12 +1,9 @@
 <?php
 namespace App\Controllers\Admin;
 
-//require 'Controller.php';
 use App\Controllers\Controller;
 use App\Models\Voucher;
 use Slim\Views\Twig as View;
-// use GuzzleHttp\Client;
-
 class VoucherController extends Controller{
     
     public function index($res, $req){
@@ -18,16 +15,17 @@ class VoucherController extends Controller{
         try{
             $result = $this->container->Api->getOrders($args['ordernum']);
             $optiontemp ='<option> -- Select Product -- </option>';
-            foreach($result->line_items as $items){
-                $optiontemp .="<option value='". $items->product_id ."'>". $items->name ."</option>"; 
-            }
+            foreach($result->line_items as $items)  $optiontemp .="<option value='". $items->product_id ."'>". $items->name ."</option>";
     
             return json_encode(array(
-                'optiontemp'    => $optiontemp, 
-                'paymentmethod' => $result->payment_method
+                'temp'    => $optiontemp,
+                'status'  => true
             ));
         }catch(\Exception $e){
-            return $e->getMessage();
+            return json_encode(array(
+                'temp'  => $this->Dagger->alertTemp('danger', "<strong>Oops!</strong> Order number is invalid, Please try again."),
+                'status'=> false
+            ));
         }
     }
 
@@ -37,15 +35,32 @@ class VoucherController extends Controller{
                 'id'            => $args['voucherid'],
                 'vouchercode'   => $args['vouchercode'],
                 'note'          => isset($args['note']) ? $args['note'] : '',
-                'email'         => $args['email'],
+                'email'         => base64_decode($args['email']),
                 'ordernum'      => $args['ordernum'],
                 'phone'         => isset($args['phone']) ? $args['phone'] : '',
             );
             $create = Voucher::insert($this->voucherData($voucherInfo));
-            //return $this->assembleEmail($voucherInfo);
-            return $create ? $create : 'error';
+            if($create){
+                $sendEmail = $this->Email->sendMail($this->assembleEmail($voucherInfo));
+                if($sendEmail){
+                    return json_encode(array(
+                        'temp' => $this->Dagger->alertTemp('success', '<strong>Well done!</strong> Voucher successfully sent.'),
+                        'status'=> true,
+                    ));
+                }else{
+                    return json_encode(array(
+                        'temp' => $this->Dagger->alertTemp('success', '<strong>Oops!</strong> '. $sendEmail),
+                        'status'=> false,
+                    ));
+                }
+            }else{
+                return json_encode(array(
+                    'temp' => $this->Dagger->alertTemp('success', '<strong>Oops!</strong> '. $create),
+                    'status'=> false,
+                ));
+            }
         }catch(\Exception $e){
-            return $e->getMessage();
+            return $this->Dagger->alertTemp('danger', "<strong>Oops!</strong> ". $e->getMessage());
         }
     }
 
@@ -58,14 +73,14 @@ class VoucherController extends Controller{
             'User_Id'           => $order->customer_id,
             'user_name'         => $order->billing->first_name ? $order->billing->first_name : $order->shipping->first_name,
             'Order_Id'          => $voucherInfo['ordernum'],
-            'Vendor_Id'        => $p->vendor,
+            'Vendor_Id'         => $p->vendor,
             'code'              => $voucherInfo['vouchercode'],
-            'note'              => $voucherInfo['note'],
+            'note'              => ( $voucherInfo['note'] ?: ''),
             'email'             => $voucherInfo['email'],
-            'phone'             => $voucherInfo['phone'],
+            'phone'             => ( $voucherInfo['phone'] ?: ''),
             'payment_method'    => $order->payment_method,
             'product_name'      => $p->name,
-            'product_summary'   => strip_tags($p->short_description),
+            'product_summary'   => $p->short_description,
             'product_img'       => $p->images[0]->src,
             'regular_price'     => $p->regular_price,
             'sale_price'        => $p->sale_price ? $p->sale_price : 'N/A',
@@ -79,7 +94,7 @@ class VoucherController extends Controller{
     public function assembleEmail($voucherInfo){
         $p = $this->voucherData($voucherInfo);
         $note = "Thank you for choosing All-A. Please be reminded that this voucher is
-        valid until ". date("F jS, Y", strtotime($p['expiration_date'])) . " only and shall not be extended.
+        valid until ". date("F j, Y", strtotime($p['expiration_date'])) . " only and shall not be extended.
         The vouchers are consider forfeited if it is not used within the validity period. Please
         be reminded also that voucher is non-refundable. <br> <br> Note: Upon redemption, Please
         set an appointment to the merchant or call the merchant. ". ($p['note'] ? $p['note'] : '');
@@ -88,7 +103,7 @@ class VoucherController extends Controller{
             array(
                 'name'          => $p['product_name'],
                 'customername'  => $p['user_name'],
-                'summary'       => $p['product_summary'],
+                'summary'       => strip_tags($p['product_summary']),
                 'note'          => $note,
                 'vouchercode'   => $p['code'],
                 'saleprice'     => $p['sale_price'],
@@ -102,7 +117,4 @@ class VoucherController extends Controller{
         );
         return $template;
     }
-    
 }
-
-?>
