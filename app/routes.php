@@ -60,8 +60,10 @@
     $app->get('/papi/schedule/{status}','FlashSaleController:loadSchedule');
     $app->get('/papi/schedule/delete/{id}','FlashSaleController:deleteSchedule');
     $app->get('/api/vendor','ProductsController:getVendor');
-    $app->get('/api/order/{ordernum}','VoucherController:getOrder');
-    $app->get('/api/email/{ordernum}/{vouchercode}/{voucherid}/{fname}/{lname}/{email}/{phone}/{note}','VoucherController:sendEmail');
+    $app->get('/admin/voucher/vendor','VoucherController:getVendor');
+    $app->get('/admin/voucher/voucher/{id}/{limit}/{status}/{datefrom}/{dateto}','VoucherController:loadVoucher');
+    $app->get('/admin/voucher/order/{ordernum}','VoucherController:getOrder');
+    $app->get('/admin/voucher/email/{ordernum}/{vouchercode}/{voucherid}/{fname}/{lname}/{email}/{phone}/{note}','VoucherController:sendEmail');
 
 
 

@@ -5,7 +5,7 @@ use App\Controllers\Controller;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 class EmailController extends Controller{
-    
+     
     public function sendMail($template, $email = 'keyladrian7@gmail.com'){
         $mail = new PHPMailer(true);
         try{

@@ -73,7 +73,7 @@ class ApiController extends Controller{
     public function getVendors($id=0){
         $str = 'vendors/' . ($id ? $id : '');
         $result = $this->guzzle->request('GET', $str, $this->getAuth());
-        echo $result->getBody();
+        return json_decode($result->getBody()->getContents());
     }
 
     public function getVendorProducts($id=0){
@@ -81,7 +81,7 @@ class ApiController extends Controller{
         $this->switchUrl(2);
         $str = 'products/?vendor='. $id;
         $result = $this->guzzle->request('GET', $str, $this->getAuth());
-        echo $result->getBody();
+        return $result->getBody();
     }
 
     public function getOrders($ordernum = 0){

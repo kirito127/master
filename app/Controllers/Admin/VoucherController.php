@@ -11,19 +11,90 @@ class VoucherController extends Controller{
         return $this->view->render($req, 'admin/voucher.twig',[]);
     }
 
+    public function loadVoucher($res, $req, $args){
+        $vendorid   = $args['id'];
+        $limit      = $args['limit'];
+        $status     = $args['status'];
+        $datefrom   = $args['datefrom'];
+        $dateto     = $args['dateto'];
+        $temp       = '';
+        $sales        = 0;
+
+        $result = Voucher::all()->take($limit);
+
+        if( $vendorid <> 0){
+            $result = $result->where('Vendor_Id', $vendorid);
+        }
+
+        if( $status <> 'All'){
+            $result = $result->where('status', $status);
+        }
+
+        if($datefrom <> 0){ ////////////////////////used_date rather
+            $result = $result->where('ordered_date', '>=', $datefrom);
+        }elseif($dateto <> 0){
+            $result = $result->where('ordered_date', '<=', $dateto);
+        }
+
+
+
+        if(empty($result)) return 'No records found';
+        
+        // $result = $vendorid == 0 ? Voucher::all()->where('status', $status)->take($limit) : Voucher::where('Vendor_Id', $vendorid)->where('status', $status)->take($limit);
+        foreach($result as $voucher){
+            $sales += ( $voucher->sale_price > 0 ? $voucher->sale_price : $voucher->regular_price );
+            $badge;
+            switch($voucher->status){
+                case 'Used'     :   $badge = 'success'; break;
+                case 'Unused'   :   $badge = 'warning'; break;
+                case 'Expired'  :   $badge = 'danger'; break;
+            }
+            $temp .= "<tr style='cursor:pointer' class='animated fadeIn'>
+                        <td>
+                            <img class='img-avatar' style='max-width:40px;max-height:40px' src='". $voucher->product_img ."' alt=''>
+                        </td>
+                        <td>". $voucher->Order_Id ."</td>
+                        <td>". $voucher->code." </td>
+                        <td>". $voucher->product_name ."</td>
+                        <td>
+                            <span class='badge badge-$badge'>". $voucher->status ."</span>
+                        </td>
+                        <td>
+                           P". ( $voucher->sale_price > 0 ? $voucher->sale_price : $voucher->regular_price ) ."
+                        </td>
+                        <td>". date('F j, Y', strtotime($voucher->ordered_date))."</td>
+                        <td>". date('F j, Y', strtotime($voucher->send_date))."</td>
+                        <td>". ( strtotime($voucher->used_date) != 0 ? date('F j, Y', strtotime($voucher->used_date)) : 'N/A')."</td>
+                    </tr>";
+        }
+        return json_encode(array(
+            'temp'  => $temp,
+            'sales' => $sales,
+        ));
+    }
+
+    public function getVendor(){
+        $result = $this->Api->getVendors();
+        $temp = '<option>All</option>';
+        foreach($result as $vendor){
+            $temp .= "<option value='". $vendor->id ."'> ". $vendor->display_name ."</option>";
+        }
+        return $temp;
+    }
+
     public function getOrder($res, $req, $args){
         try{
             $result = $this->container->Api->getOrders($args['ordernum']);
             $optiontemp ='<option> -- Select Product -- </option>';
             foreach($result->line_items as $items)  $optiontemp .="<option value='". $items->product_id ."'>". $items->name ."</option>";
-    
+
             return json_encode(array(
                 'temp'    => $optiontemp,
                 'status'  => true
             ));
         }catch(\Exception $e){
             return json_encode(array(
-                'temp'  => $this->Dagger->alertTemp('danger', "<strong>Oops!</strong> Order number is invalid, Please try again."),
+                'temp'  => $this->Dagger->alertTemp('danger', '<strong>Oops!</strong> Order number is invalid, Please try again.'),
                 'status'=> false
             ));
         }
@@ -64,6 +135,7 @@ class VoucherController extends Controller{
         }
     }
 
+    //get voucher data 
     protected function voucherData($voucherInfo){ 
         $p = $this->Api->getProductById($voucherInfo['id']);
         $order = $this->container->Api->getOrders($voucherInfo['ordernum']);
@@ -90,7 +162,7 @@ class VoucherController extends Controller{
         );
     }
 
-
+    //return an email template
     public function assembleEmail($voucherInfo){
         $p = $this->voucherData($voucherInfo);
         $note = "Thank you for choosing All-A. Please be reminded that this voucher is

@@ -5,3 +5,7 @@ function generateRandom(min, max, length) {
     }
     return output;
 }
+
+function calculateCommission(sales, commission){
+    return sales * (commission / 100);
+}

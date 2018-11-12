@@ -1,7 +1,6 @@
 {% extends 'layout.twig' %}
 
 {% block content %}
-
 <nav aria-label='breadcrumb'>
     <ol class='breadcrumb'>
         <li class='breadcrumb-item'>
@@ -42,7 +41,7 @@
                     <div class='input-group'>
                         <input type='number' id='ordernumtxt' class='form-control rounded' placeholder='E.g. 2477'>
                         <span class='input-group-btn'>
-                            <button id='verifybtn'  class='btn btn-primary' type='button'>Verify</button>
+                            <button id='verifybtn' class='btn btn-primary' type='button'>Verify</button>
                         </span><br>
                     </div>
                     <small class='form-text text-muted'>Please click the verify button to assure that your order number
@@ -52,7 +51,8 @@
                 <div class='form-group'>
                     <label for='vouchercodetxt'>Voucher Code</label>
                     <input readonly type='text' class='form-control rounded' id='vouchercodetxt' placeholder='XXXXXXXXXXXX'>
-                    <small class='form-text text-muted'>Voucher code is automatically generated when order number is verified</small>
+                    <small class='form-text text-muted'>Voucher code is automatically generated when order number is
+                        verified</small>
                 </div>
 
                 <div class='form-group'>
@@ -95,7 +95,7 @@
                     <label for='exampleFormControlTextarea1'>Note (optional)</label>
                     <textarea class='form-control rounded' id='notetxt' placeholder='Your note to customer' rows='3'></textarea>
                 </div>
-                
+
                 <button type='button' id='sendbtn' class='btn btn-primary'><i class='fa fa-send'></i> Send</button>
                 <button type='button' id='clearbtn' class='btn btn-danger'><i class='fa fa-close'></i> Clear</button>
 
@@ -104,22 +104,94 @@
 
         <div class='tab-pane fade' id='voucherlist' role='tabpanel' aria-labelledby='voucherlist-tab'>
 
-            <div class="row">
-                <div class="col-lg-3">
-                    <label for="showdrp">Show</label>
-                    <select class="form-control rounded" id="showdrp">
+            <div class='jumbotron p-3 bg-light'>
+                <div class='row'>
+                    <div class='col-lg-2'>
+                        <small for='limitdrp'>Show</small>
+                        <select class='form-control rounded' id='limitdrp'>
+                            <option value='10'>10</option>
+                            <option value='30'>30</option>
+                            <option value='50'>50</option>
+                            <option value='100'>100</option>
+                        </select>
+                    </div>
+                    <div class='col-lg-2'>
+                        <small for='statusdrp'>Status</small>
+                        <select class='form-control rounded' id='statusdrp'>
+                            <option value='All'>All</option>
+                            <option value='Unused'>Unused</option>
+                            <option value='Used'>Used</option>
+                            <option value='Expired'>Expired</option>
+                        </select>
+                    </div>
+                    <div class='col-lg-2'>
+                        <small for='vendordrp'>Mechants</small>
+                        <select class='form-control rounded' id='vendordrp'></select>
+                    </div>
+                    <div class='col-lg-3'>
+                        <small for='datefrom'>Date From</small>
+                        <input type='date' class='form-control form-control-md rounded' id='datefrom'>
+                    </div>
+                    <div class='col-lg-3'>
+                        <small for='datefrom'>Date To</small>
+                        <input type='date' class='form-control form-control-md rounded' id='dateto'>
+                    </div>
                 </div>
-                <div class="col-lg-3">
-                    <label for="vendordrp">Mechants</label>
-                    <select class="form-control rounded" id="vendordrp">
+                <div class='row mt-3'>
+                    <div class='col-md-3'>
+                        <small>SALES</small>
+                        <div class='input-group input-group-sm'>
+                            <div class='input-group-prepend'>
+                                <span class='input-group-text bg-light' id='basic-addon1'> ₱ </span>
+                            </div>
+                            <input type='text' class='form-control' id='salestxt' placeholder='0' readonly>
+                        </div>
+                        <small class='text-muted'>Initial sales from all voucher listed</small>
+                    </div>
+                    <div class='col-md-3'>
+                        <small>COMMISSION</small>
+                        <div class='input-group input-group-sm'>
+                            <input type='number' id='commissiontxt' class='form-control' placeholder='0%'>
+                            <div class='input-group-append'>
+                                <button class='btn btn-primary' id='calculatebtn' type='button'>Caculate</button>
+                            </div>
+                        </div>
+                        <small class='text-muted'>Enter commission percentage from 1-100</small>
+                    </div>
+                    <div class='col-md-3'>
+                        <small>PROFIT</small>
+                        <div class='input-group input-group-sm'>
+                            <div class='input-group-prepend'>
+                                <span class='input-group-text bg-light' id='basic-addon1'> ₱ </span>
+                            </div>
+                            <input type='text' class='form-control' id='profittxt' placeholder='0'
+                                readonly>
+                        </div>
+                        <!-- <small class='text-muted'>Provide a commission to get the total</small> -->
+                    </div>
+                    <div class='col-md-3 pt-4'>
+                        <button class="btn btn-danger btn-sm" id='clearbtn2'><i class="fas fa-times"></i> Clear</button>
+                        <button class="btn btn-success btn-sm ml-1"><i class="fas fa-print"></i> Print</button>
+                    </div>
                 </div>
-                <div class="col-lg-3"></div>
-                <div class="col-lg-3"></div>
             </div>
 
 
-            </select>
-            
+            <table class='table table-hover mt-2'>
+                <thead>
+                    <th><i class='far fa-image'></i></th>
+                    <th>Order</th>
+                    <th>Code</th>
+                    <th>Product</th>
+                    <th>Status</th>
+                    <th>Price</th>
+                    <th>Ordered Date</th>
+                    <th>Expiration</th>
+                    <th>Used Date</th>
+                </thead>
+                <tbody id='voucher-container'></tbody>
+            </table>
+
         </div>
 
     </div>
@@ -127,110 +199,214 @@
 </div>
 
 <script type='text/javascript'>
-    $(function () {   
-            var ordernum;
-            var vouchercode;
-            var voucherid;
+    $(function () {
+        var ordernum;
+        var vouchercode;
+        var voucherid;
+        getVendors();
+        loadVoucher(0, 10, 'All', 0, 0);
 
-            $('#verifybtn').click(function(){
-                ordernum = $('#ordernumtxt').val();
-                if(ordernum){
-                    $('#verifybtn').prop('disabled', true);
-                    getOrder(ordernum);
-                }
-            });
-            
-            $('clearbtn').click(function(){
-                clear();
-            });
+        $('#voucher-container').on('click', 'tr', function(){
+            var x = $(this);
+            alert(x.html());
+        });
 
-            $('#voucherdrp').change(function(){
-                voucherid = $(this).val();
-                validate();
-            });
+        $('#clearbtn2').click(function(){
+            $('#commissiontxt').val('').prop('readonly', false);
+            $('#profittxt').val('');
+        });
+        
 
-            function validate(){
-                var fname = $('#fnametxt').val(); 
-                var lname = $('#lnametxt').val();
-                var email = $('#emailtxt').val();
-                if(fname && lname && email && vouchercode && voucherid && ordernum){
-                    return true;
-                }else{
-                    return false;
-                }
+        $('#calculatebtn').click(function(){
+            var commission = parseFloat($('#commissiontxt').val());
+            var sales = parseFloat($('#salestxt').val());
+            var profit = calculateCommission(sales, commission);
+            if(commission){
+                $('#profittxt').val(profit);
+                $('#commissiontxt').prop('readonly', true);
+                $(this).removeClass('greenpulse');
+            }
+
+        });
+
+        // check if commission is satisfy the condition then glow lol
+        $('#commissiontxt').on('change keyup', function(){
+            var commission = $(this).val();
+            if(commission > 0 && commission <= 100){
+                $('#calculatebtn').addClass('greenpulse');
+            }else{
+                $('#calculatebtn').removeClass('greenpulse');
+                $('#profittxt').val('');
+                $(this).prop('readonly', false);
+            }
+        });
+        
+        //verify btn click , invoke the function that check if order number exist
+        $('#verifybtn').click(function () {
+            ordernum = $('#ordernumtxt').val();
+            if (ordernum) {
+                $('#verifybtn').prop('disabled', true);
+                getOrder(ordernum);
+            }
+        });
+
+        $('#clearbtn').click(function () {
+            clear();
+        });
+
+        $('#voucherdrp').change(function () {
+            voucherid = $(this).val();
+            validate();
+        });
+
+        function validate() {
+            var fname = $('#fnametxt').val();
+            var lname = $('#lnametxt').val();
+            var email = $('#emailtxt').val();
+            if (fname && lname && email && vouchercode && voucherid && ordernum) {
+                return true;
+            } else {
                 return false;
             }
+            return false;
+        }
 
-            $('#sendbtn').click(function(){
-                if(validate()){
-                    var arr = {
-                        'ordernum'   : ordernum,
-                        'vouchercode': vouchercode,
-                        'voucherid'  : voucherid,
-                        'fname'      : $('#fnametxt').val(),
-                        'lname'      : $('#lnametxt').val(),
-                        'email'      : window.btoa($('#emailtxt').val()),
-                        'phone'      : $('#phonetxt').val() ? $('#phonetxt').val() : 0,
-                        'note'      : $('#notetxt').val() ? $('#notetxt').val() : 0
-                    };
-                    sendVoucher(arr);
-                }else{
-                    alert('Please make sure to fill up all fields with asterisk(*)');
+        // send btn click, validate for required fields and invoke sendVoucher method
+        $('#sendbtn').click(function () {
+            if (validate()) {
+                var arr = {
+                    'ordernum': ordernum,
+                    'vouchercode': vouchercode,
+                    'voucherid': voucherid,
+                    'fname': $('#fnametxt').val(),
+                    'lname': $('#lnametxt').val(),
+                    'email': window.btoa($('#emailtxt').val()),
+                    'phone': $('#phonetxt').val() ? $('#phonetxt').val() : 0,
+                    'note': $('#notetxt').val() ? $('#notetxt').val() : 0
+                };
+                sendVoucher(arr);
+            } else {
+                alert('Please make sure to fill up all fields with asterisk(*)');
+            }
+        });
+
+        // vendor dropdown on change event
+        $('#vendordrp').change(function () {
+            var id = $(this).val();
+            var limit = $('#limitdrp').val();
+            var status = $('#statusdrp').val();
+            var datefrom = $('#datefrom').val() ? $('#datefrom').val() : 0;
+            var dateto = $('#dateto').val() ? $('#dateto').val() : 0;;
+            loadVoucher(id, limit, status, datefrom, dateto);
+        });
+
+        $('#limitdrp').change(function () {
+            var id = $('#vendordrp').val();
+            var limit = $(this).val();
+            var status = $('#statusdrp').val();
+            var datefrom = $('#datefrom').val() ? $('#datefrom').val() : 0;
+            var dateto = $('#dateto').val() ? $('#dateto').val() : 0;;
+            loadVoucher(id, limit, status, datefrom, dateto);
+        });
+
+        $('#statusdrp').change(function () {
+            var id = $('#vendordrp').val();
+            var limit = $('#limitdrp').val();
+            var status = $(this).val();
+            var datefrom = $('#datefrom').val() ? $('#datefrom').val() : 0;
+            var dateto = $('#dateto').val() ? $('#dateto').val() : 0;;
+            loadVoucher(id, limit, status, datefrom, dateto);
+        });
+
+        $('#datefrom').change(function () {
+            var limit = $('#limitdrp').val();
+            var status = $('#statusdrp').val();
+            var id = $('#vendordrp').val();
+            var dateto = $('#dateto').val() ? $('#dateto').val() : 0;
+            var datefrom = $(this).val() ? $(this).val() : 0;
+            loadVoucher(id, limit, status, datefrom, dateto);
+        });
+
+        $('#dateto').change(function () {
+            var limit = $('#limitdrp').val();
+            var status = $('#statusdrp').val();
+            var id = $('#vendordrp').val();
+            var datefrom = $('#datefrom').val() ? $('#datefrom').val() : 0;
+            var dateto = $(this).val() ? $(this).val() : 0;
+            loadVoucher(id, limit, status, datefrom, dateto);
+        });
+
+        function clear() {
+            $('#ordernumtxt').val('');
+            $('#vouchercodetxt').val('');
+            $('#voucherdrp').html('');
+            $('#fnametxt').val('');
+            $('#lnametxt').val('');
+            $('#emailtxt').val('');
+            $('#phonetxt').val('');
+            $('#notetxt').val('');
+        }
+
+        //ajax // ##############################################
+        function loadVoucher(id = 0, limit = 10, status = 'All ', datefrom = 0, dateto = 0) {
+            $.ajax({
+                type: 'GET',
+                url: '/admin/voucher/voucher/' + id + '/' + limit + '/' + status + '/' + datefrom + '/' + dateto,
+                success: function (result) {
+                    var obj = JSON.parse(result);
+                    $('tbody#voucher-container').html(obj.temp);
+                    $('#salestxt').val(obj.sales);
+                    // console.log(obj.sum);
                 }
             });
+        }
 
-            function clear(){
-                $('#ordernumtxt').val('');
-                $('#vouchercodetxt').val('');
-                $('#voucherdrp').html('');
-                $('#fnametxt').val('');
-                $('#lnametxt').val('');
-                $('#emailtxt').val('');
-                $('#phonetxt').val('');
-                $('#notetxt').val('');
-            }
-            
-            //ajax
-            function getOrder(ordernum){
-                var code = String(ordernum) + generateRandom(0,9, 12 - String(ordernum).length);
-                $.ajax({
-                    type: 'GET',
-                    url: 'api/order/'+ordernum,
-                    success: function(result){
-                        var obj = JSON.parse(result);
-                        if(obj.status){
-                            $('#voucherdrp').html(obj.temp);
-                            $('#vouchercodetxt').val(code);
-                            ordernum = ordernum;
-                        }else{
-                            $('div#alert-container').html(obj.temp);
-                        }
+        function getVendors() {
+            $.ajax({
+                type: 'GET',
+                url: '/admin/voucher/vendor',
+                success: function (result) {
+                    $('#vendordrp').html(result);
+                }
+            });
+        }
 
-                        vouchercode = code;
-                    },
-                    error: function (xhr, msg) {
-                        console.log(msg + '\n' + xhr.responseText);
+        function getOrder(ordernum) {
+            var code = String(ordernum) + generateRandom(0, 9, 12 - String(ordernum).length);
+            $.ajax({
+                type: 'GET',
+                url: 'admin/voucher/order/' + ordernum,
+                success: function (result) {
+                    var obj = JSON.parse(result);
+                    if (obj.status) {
+                        $('#voucherdrp').html(obj.temp);
+                        $('#vouchercodetxt').val(code);
+                        ordernum = ordernum;
+                    } else {
+                        $('div#alert-container').html(obj.temp);
                     }
-                });
-                $('#verifybtn').prop('disabled', false);
-            }
+                    vouchercode = code;
+                },
+                error: function (xhr, msg) {
+                    console.log(msg + '\n' + xhr.responseText);
+                }
+            });
+            $('#verifybtn').prop('disabled', false);
+        }
 
-            function sendVoucher(arr){
-                $.ajax({
-                    type: 'GET',
-                    url:  'api/email/'+arr.ordernum+'/'+arr.vouchercode+'/'+arr.voucherid+'/'+arr.fname+'/'+arr.lname+'/'+arr.email+'/'+arr.phone+'/'+arr.note,
-                    success: function(result){
-                        var obj = JSON.parse(result);
-                        $('div#alert-container').html(obj.temp);                        
-                        if(obj.status){
-                            clear();
-                        }
+        function sendVoucher(arr) {
+            $.ajax({
+                type: 'GET',
+                url: 'admin/voucher/email/' + arr.ordernum + '/' + arr.vouchercode + '/' + arr.voucherid + '/' + arr.fname + '/' + arr.lname + '/' + arr.email + '/' + arr.phone + '/' + arr.note,
+                success: function (result) {
+                    var obj = JSON.parse(result);
+                    $('div#alert-container').html(obj.temp);
+                    if (obj.status) {
+                        clear();
                     }
-                });
-            }
-
-
-;
+                }
+            });
+        }
     });
 </script>
 
