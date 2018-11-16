@@ -8,7 +8,10 @@ class AuthMiddleware extends Middleware{
         if(!$this->container->auth->check()){
             $this->container->flash->addMessage('login-error', 'Please sign in.');
            return $response->withRedirect($this->container->router->pathFor('auth.login'));
-        }elseif($this->container->auth->role() !== 'administrator'){
+        }elseif($this->container->auth->role() == 'dc_vendor'){
+           // return $response->withStatus(403);
+           return $response->withRedirect($this->container->router->pathFor('vendor.dashboard'));
+        }else{
             return $response->withStatus(403);
         }
 

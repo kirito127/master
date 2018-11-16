@@ -112,6 +112,14 @@ $container['ProductsController'] = function($container){
     return new \App\Controllers\Vendor\ProductsController($container);
 };
 
+$container['VoucherSearchController'] = function($container){
+    return new \App\Controllers\Vendor\VoucherSearchController($container);
+};
+
+$container['VoucherRecordsController'] = function($container){
+    return new \App\Controllers\Vendor\VoucherRecordsController($container);
+};
+
 $container['validator'] = function($container){
     return new \App\Validation\Validator;
 };

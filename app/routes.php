@@ -34,6 +34,8 @@
     $app->group('', function(){
         $this->get('/merchant','DashboardController:index')->setName('vendor.dashboard');
         $this->get('/merchant/products','ProductsController:index')->setName('vendor.products');
+        $this->get('/merchant/voucher-search','VoucherSearchController:index')->setName('vendor.voucher-search');
+        $this->get('/merchant/voucher-records','VoucherRecordsController:index')->setName('vendor.voucher-records');
     })->add(new VendorMiddleware($container));
 
     $app->group('', function(){
@@ -65,6 +67,8 @@
     $app->get('/admin/voucher/order/{ordernum}','VoucherController:getOrder');
     $app->get('/admin/voucher/email/{ordernum}/{vouchercode}/{voucherid}/{fname}/{lname}/{email}/{phone}/{note}','VoucherController:sendEmail');
 
+    $app->get('/merchant/voucher/search/{code}','MerchantVoucherController:searchVoucher');
+    $app->get('/merchant/voucher/update/{id}','MerchantVoucherController:updateVoucher');
 
 
     //  ******* ENDPRIVATE API ROUTES  ******* //

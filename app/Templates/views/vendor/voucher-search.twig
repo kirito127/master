@@ -1,0 +1,81 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+
+<nav aria-label='breadcrumb' class='mb-lg-3 mb-sm-1 mb-1 d-none d-md-block'>
+  <ol class='breadcrumb'>
+    <li class='breadcrumb-item'><a href='/'><i class='fa fa-home'></i> </a></li>
+    <li class='breadcrumb-item active' aria-current='page'>Voucher Search</li>
+  </ol>
+</nav>
+
+{% include 'partials/content-flash.twig' %}
+
+
+<div class='container mt-1 mt-sm-1 px-1 px-sm-1'>
+  <div class='card rounded'>
+    <div class='card-header bg-white'>
+      <h5 class='mb-0 text-dark'>Voucher Confirmation</h5>
+    </div>
+    <div class='card-body'>
+      <div class='input-group'>
+        <input id='searchtxt' type='search' class='form-control rounded' placeholder='Enter voucher code here ...'>
+        <span class='input-group-btn'>
+          <button class='btn btn-primary' id='searchbtn' type='button'><i class='fas fa-search'></i> Search</button>
+        </span>
+      </div>
+    </div>
+  </div>
+  <div id='voucher-container' class='container'></div>
+</div>
+
+
+<script type='text/javascript'>
+  $(function () {
+
+    var loader = "<div class='text-center'><div class='lds-dual-ring text-center'></div></div>";
+
+    $('#voucher-container').on('click', '#closebtn', function () {
+      $('#voucher-container').html('');
+    });
+
+    $('#voucher-container').on('click', '#confirmbtn', function () {
+      var id = $('#id').val();
+      update(id);
+    });
+
+    $('#searchbtn').click(function () {
+      var code = $('#searchtxt').val();
+      if (code) {
+        $('#voucher-container').html(loader);
+        search(code);
+      }
+
+    });
+
+    // ajax ############################################## ajax
+    function search(code) {
+      $.ajax({
+        type: 'GET',
+        url: '/merchant/voucher/search/' + code,
+        success: function (result) {
+          $('#voucher-container').html(result);
+        }
+      });
+    }
+
+    function update(id) {
+      $.ajax({
+        type: 'GET',
+        url: '/merchant/voucher/update/' + id,
+        success: function (result) {
+          $('#voucher-container').html(result);
+          console.log(result);
+        }
+      });
+    }
+
+  });
+</script>
+
+{% endblock %}

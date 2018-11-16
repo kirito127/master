@@ -6,7 +6,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 class EmailController extends Controller{
      
-    public function sendMail($template, $email = 'keyladrian7@gmail.com'){
+    public function sendMail($template, $email){
         $mail = new PHPMailer(true);
         try{
             $mail->isSMTP(); 

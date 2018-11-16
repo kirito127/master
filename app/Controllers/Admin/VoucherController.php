@@ -112,7 +112,7 @@ class VoucherController extends Controller{
             );
             $create = Voucher::insert($this->voucherData($voucherInfo));
             if($create){
-                $sendEmail = $this->Email->sendMail($this->assembleEmail($voucherInfo));
+                $sendEmail = $this->Email->sendMail($this->assembleEmail($voucherInfo), $voucherInfo['email']);
                 if($sendEmail){
                     return json_encode(array(
                         'temp' => $this->Dagger->alertTemp('success', '<strong>Well done!</strong> Voucher successfully sent.'),
@@ -156,7 +156,8 @@ class VoucherController extends Controller{
             'product_img'       => $p->images[0]->src,
             'regular_price'     => $p->regular_price,
             'sale_price'        => $p->sale_price ? $p->sale_price : 'N/A',
-            'discount'          => $p->sale_price ? round(round((($p->regular_price - $p->sale_price) / $p->regular_price) * 100, 0)) : 'N/A',
+            'discount'          => $p->sale_price ? round(($p->sale_price / $p->regular_price) * 100) : 'N/A',
+            // 'discount'          => $p->sale_price ? round(round((($p->regular_price - $p->sale_price) / $p->regular_price) * 100, 0)) : 'N/A',
             'ordered_date'      => date('Y-m-d', strtotime($p->date_created)),
             'expiration_date'   => date('Y-m-d', strtotime("+30 days")),
         );
@@ -168,7 +169,7 @@ class VoucherController extends Controller{
         $note = "Thank you for choosing All-A. Please be reminded that this voucher is
         valid until ". date("F j, Y", strtotime($p['expiration_date'])) . " only and shall not be extended.
         The vouchers are consider forfeited if it is not used within the validity period. Please
-        be reminded also that voucher is non-refundable. <br> <br> Note: Upon redemption, Please
+        be reminded also that voucher is non-refundable. <br> <br> Note: Voucher is transferable and may be given as a gift to family and friends. Upon redemption, Please
         set an appointment to the merchant or call the merchant. ". ($p['note'] ? $p['note'] : '');
         
         $template = $this->view->fetch('email-template.twig',
@@ -178,9 +179,9 @@ class VoucherController extends Controller{
                 'summary'       => strip_tags($p['product_summary']),
                 'note'          => $note,
                 'vouchercode'   => $p['code'],
-                'saleprice'     => $p['sale_price'],
-                'regularprice'  => $p['regular_price'],
-                'discount'      => $p['sale_price'],
+                'saleprice'     => '₱'.$p['sale_price'] .'.00',
+                'regularprice'  => '₱'.$p['regular_price'] .'.00',
+                'discount'      => $p['discount'] .'%',
                 'paymentmethod' => $p['payment_method'],
                 'img'           => $p['product_img'],
                 'orderdate'     => date("F j, Y", strtotime($p['ordered_date'])),
