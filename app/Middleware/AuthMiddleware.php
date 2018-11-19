@@ -11,8 +11,6 @@ class AuthMiddleware extends Middleware{
         }elseif($this->container->auth->role() == 'dc_vendor'){
            // return $response->withStatus(403);
            return $response->withRedirect($this->container->router->pathFor('vendor.dashboard'));
-        }else{
-            return $response->withStatus(403);
         }
 
         $response = $next($request, $response);

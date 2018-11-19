@@ -31,9 +31,11 @@ class VoucherController extends Controller{
         }
 
         if($datefrom <> 0){ ////////////////////////used_date rather
-            $result = $result->where('ordered_date', '>=', $datefrom);
-        }elseif($dateto <> 0){
-            $result = $result->where('ordered_date', '<=', $dateto);
+            $result = $result->where('used_date', '>=', $datefrom);
+        }
+        
+        if($dateto <> 0){
+            $result = $result->where('used_date', '<=', $dateto);
         }
 
 

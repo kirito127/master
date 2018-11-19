@@ -15,7 +15,7 @@ class VoucherSearchController extends Controller{
 
     public function updateVoucher($req, $res, $args){
         try {
-            $voucher = Voucher::where('id', $args['id'])->update(array('status' => 'Used')); //update from db
+            $voucher = Voucher::where('id', $args['id'])->update(array('status' => 'Used','used_date' => $this->Dagger->datenow())); //update from db
             return $voucher ?   $this->Dagger->alertTemp('success', '<strong>Well done ! </strong> Voucher successfully updated.') :
                                 $this->Dagger->alertTemp('success', '<strong>Oops ! </strong> Some error occured, Please try again.') ;
         } catch (\Exception $e) {
@@ -43,6 +43,7 @@ class VoucherSearchController extends Controller{
             $badge = $voucher->status == 'Unused' ? "success" : 'danger';
             $badgeLabel = ($voucher->status == 'Unused' ? "Available" : ($voucher->status == 'Used' ? 'Not Available' : 'Expired'));
             $btnStatus = $voucher->status == 'Unused' ? "id='confirmbtn'" : 'disabled';
+            $usageDate = $voucher->status == 'Used' ? "<li class='list-group-item rounded-0'>Usage Date : ".  date('F j, Y', strtotime($voucher->used_date)) . "</li>" :'';
             $template = "<div class='row rounded my-2'>
                                 <input type='hidden' id='id' value='". $voucher->id . "'>
                                 <div class='col-md-3 p-0 bg-white'>
@@ -58,7 +59,8 @@ class VoucherSearchController extends Controller{
                                         <li class='list-group-item rounded-0'>Voucher Code : ". $voucher->code ."</li>
                                         <li class='list-group-item rounded-0'>Sale Price : ₱". ($voucher->sale_price ? number_format($voucher->sale_price, 2) : 'N/A') ."</li>
                                         <li class='list-group-item rounded-0'>Regular Price : ₱". number_format($voucher->regular_price, 2) ."</li>
-                                        <li class='list-group-item rounded-0'>Expiration Date : ".  date('F j, Y', strtotime($voucher->expiration_date)) . "</li>
+                                        <li class='list-group-item rounded-0'>Expiration Date : ".  date('M. j, Y', strtotime($voucher->expiration_date)) . "</li>
+                                        $usageDate
                                     </ul>
                                 </div>
                                 <div class='col-12 text-center pt-3'>

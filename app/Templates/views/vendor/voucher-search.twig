@@ -57,7 +57,7 @@
     function search(code) {
       $.ajax({
         type: 'GET',
-        url: '/merchant/voucher/search/' + code,
+        url: '/merchant/voucher-search/search/' + code,
         success: function (result) {
           $('#voucher-container').html(result);
         }
@@ -67,10 +67,9 @@
     function update(id) {
       $.ajax({
         type: 'GET',
-        url: '/merchant/voucher/update/' + id,
+        url: '/merchant/voucher-search/update/' + id,
         success: function (result) {
           $('#voucher-container').html(result);
-          console.log(result);
         }
       });
     }

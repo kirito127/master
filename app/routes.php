@@ -67,8 +67,9 @@
     $app->get('/admin/voucher/order/{ordernum}','VoucherController:getOrder');
     $app->get('/admin/voucher/email/{ordernum}/{vouchercode}/{voucherid}/{fname}/{lname}/{email}/{phone}/{note}','VoucherController:sendEmail');
 
-    $app->get('/merchant/voucher/search/{code}','MerchantVoucherController:searchVoucher');
-    $app->get('/merchant/voucher/update/{id}','MerchantVoucherController:updateVoucher');
+    $app->get('/merchant/voucher-search/search/{code}','VoucherSearchController:searchVoucher');
+    $app->get('/merchant/voucher-search/update/{id}','VoucherSearchController:updateVoucher');
+    $app->get('/merchant/voucher-records/load/{limit}/{filter}/{datefrom}/{dateto}','VoucherRecordsController:loadVoucher');
 
 
     //  ******* ENDPRIVATE API ROUTES  ******* //
