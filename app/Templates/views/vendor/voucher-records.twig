@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<nav aria-label='breadcrumb animated fadeIn' class='mb-lg-3 mb-sm-1 mb-1 d-none d-md-block'>
+<nav aria-label='breadcrumb animated fadeIn' class='mb-lg-3 mb-sm-1 mb-1'>
   <ol class='breadcrumb'>
     <li class='breadcrumb-item'><a href='/'><i class='fa fa-home'></i> </a></li>
     <li class='breadcrumb-item active' aria-current='page'>Voucher Records</li>
@@ -13,10 +13,10 @@
 
 
 <div class='container animated fadeIn mt-1 mt-sm-1 px-1 px-sm-1'>
-  <div class="jumbotron p-2 mb-2">
+  <div class='jumbotron p-2 mb-2'>
 
-    <div class="row">
-      <div class="col-md-2 order-2 order-md-1">
+    <div class='row'>
+      <div class='col-md-2 order-2 order-md-1'>
         <!-- show dropdown -->
         <small for='limitdrp'>Show</small>
         <select class='form-control rounded' id='limitdrp'>
@@ -27,11 +27,11 @@
         </select>
 
       </div>
-      <div class="col-md-10 order-1 order-md-2">
+      <div class='col-md-10 order-1 order-md-2'>
 
         <small for='searchtxt'>Search</small>
         <div class='input-group'>
-          <input id='searchtxt' type='search' class='form-control rounded' placeholder='Search for code, product name ...'>
+          <input id='searchtxt' type='search' class='form-control rounded' placeholder='Search for code'>
           <span class='input-group-btn'>
             <button class='btn btn-primary' id='searchbtn' type='button'><i class='fas fa-search'></i> Search</button>
           </span>
@@ -40,96 +40,119 @@
       </div>
     </div>
 
-    <div class="row">
-      <div class="col-6 col-md-3">
+    <div class='row'>
+      <div class='col-6 col-md-3'>
         <small for='datefrom'>Date From</small>
         <input type='date' class='form-control form-control-md rounded' id='datefrom'>
       </div>
-      <div class="col-6 col-md-3">
+      <div class='col-6 col-md-3'>
         <small for='datefrom'>Date To</small>
         <input type='date' class='form-control form-control-md rounded' id='dateto'>
       </div>
     </div>
   </div>
   <hr>
-
-  <div class="table-responsive-sm">
-    <table class="table table-striped table-light">
+  <div class='table-responsive-sm d-none d-sm-none d-md-block'>
+    <table class='table table-striped table-light'>
       <thead>
         <th scope='col'>Code</th>
         <th scope='col'>Name</th>
-        <th scope='col' >Price</th>
+        <th scope='col'>Price</th>
         <th scope='col'>Email</th>
         <th scope='col'>Usage Date</th>
       </thead>
-
-      <tbody id='voucher-container'>
-
-
-        <!-- <td>12345679835</td>
-            <td>Voucher Name</td>
-            <td>P1,000.00</td>
-            <td>keyladrian@gmail.com</td>
-            <td>Nov. 03, 2018</td> -->
-
-      </tbody>
+      <tbody></tbody>
     </table>
   </div>
-
-
+  <div id="voucher-container"></div>
 
 </div>
-
 
 <script type='text/javascript'>
   $(function () {
 
-    var loader =
-      "<tr><td colspan='5'><div class='text-center'><div class='lds-dual-ring text-center'></div></div></td></tr>";
-    loadVoucher();
+    var spinner = "<div class='text-center'><div class='lds-dual-ring text-center'></div></div>";
+    loader(10, 0, 0, 0);
 
-    $('#searchbtn').click(function(){
-      var filter    = $('#searchtxt').val() ? $('#searchtxt').val() : 0;
-      var limit     = $('#limitdrp').val();
-      var datefrom  = $('#datefrom').val() ? $('#datefrom').val() : 0;
-      var dateto  = $('#dateto').val() ? $('#dateto').val() : 0;
-      loadVoucher(limit, filter, datefrom, dateto);
-    });
-
-    $('#limitdrp').change(function(){
-      var filter    = $('#searchtxt').val() ? $('#searchtxt').val() : 0;
-      var limit     = $(this).val();
-      var datefrom  = $('#datefrom').val() ? $('#datefrom').val() : 0;
-      var dateto  = $('#dateto').val() ? $('#dateto').val() : 0;
-      loadVoucher(limit, filter, datefrom, dateto);
-    });
-
-    $('#datefrom').change(function(){
-      var filter    = $('#searchtxt').val() ? $('#searchtxt').val() : 0;
-      var limit     = $('#limitdrp').val();
-      var datefrom  = $(this).val() ? $(this).val() : 0;
-      var dateto  = $('#dateto').val() ? $('#dateto').val() : 0;
-      loadVoucher(limit, filter, datefrom, dateto);
-    });
-
-    $('#dateto').change(function(){
-      var filter    = $('#searchtxt').val() ? $('#searchtxt').val() : 0;
-      var limit     = $('#limitdrp').val();
-      var datefrom  = $('#datefrom').val() ? $('#datefrom').val() : 0;
-      var dateto  = $(this).val() ? $(this).val() : 0;
-      loadVoucher(limit, filter, datefrom, dateto);
-    });
-
-
-    if(isMobile()){
-      alert();
+    function loader(limit, filter, datefrom, dateto) {
+      return (isMobile() ? loadVoucherMobile(limit, filter, datefrom, dateto) : loadVoucher(limit, filter, datefrom,
+        dateto));
     }
+
+    $('#voucher-container').on('click', 'div.card', function () {
+      redirect($(this).attr('id'));
+    });
+
+    $('table tbody').on('click', 'tr', function () {
+      redirect($(this).attr('id'));
+    });
+
+    function redirect(id) {
+      window.location.href = '/merchant/voucher-view/' + id;
+    }
+
+    $('#searchbtn').click(function () {
+      var filter = $('#searchtxt').val() ? $('#searchtxt').val() : 0;
+      var limit = $('#limitdrp').val();
+      var datefrom = $('#datefrom').val() ? $('#datefrom').val() : 0;
+      var dateto = $('#dateto').val() ? $('#dateto').val() : 0;
+      loader(limit, filter, datefrom, dateto);
+    });
+
+    $('#limitdrp').change(function () {
+      var filter = $('#searchtxt').val() ? $('#searchtxt').val() : 0;
+      var limit = $(this).val();
+      var datefrom = $('#datefrom').val() ? $('#datefrom').val() : 0;
+      var dateto = $('#dateto').val() ? $('#dateto').val() : 0;
+      loader(limit, filter, datefrom, dateto);
+
+    });
+
+    $('#datefrom').change(function () {
+      var filter = $('#searchtxt').val() ? $('#searchtxt').val() : 0;
+      var limit = $('#limitdrp').val();
+      var datefrom = $(this).val() ? $(this).val() : 0;
+      var dateto = $('#dateto').val() ? $('#dateto').val() : 0;
+      loader(limit, filter, datefrom, dateto);
+    });
+
+    $('#dateto').change(function () {
+      var filter = $('#searchtxt').val() ? $('#searchtxt').val() : 0;
+      var limit = $('#limitdrp').val();
+      var datefrom = $('#datefrom').val() ? $('#datefrom').val() : 0;
+      var dateto = $(this).val() ? $(this).val() : 0;
+      loader(limit, filter, datefrom, dateto);
+    });
+
     // ajax #########################
+    function viewVoucher(id) {
+      $.ajax({
+        type: 'GET',
+        url: '/merchant/voucher-records/view-mobile/' + id,
+        success: function (result) {
+          console.log(result);
+        }
+      });
+    }
+
     function loadVoucher(limit = 10, filter = 0, datefrom = 0, dateto = 0) {
-      $('#voucher-container').html(loader);
+      $('#voucher-container').html("<tr><td colspan='5'>" + spinner + "</td></tr>");
+      $('table').show();
       $.ajax({
         type: 'GET',
         url: '/merchant/voucher-records/load/' + limit + '/' + filter + '/' + datefrom + '/' + dateto,
+        success: function (result) {
+          $('table tbody').html(result);
+        }
+      });
+    }
+
+    function loadVoucherMobile(limit = 10, filter = 0, datefrom = 0, dateto = 0) {
+      $('table').hide();
+      $('#voucher-container').html(spinner);
+      $.ajax({
+        type: 'GET',
+        url: '/merchant/voucher-records/load-mobile/' + limit + '/' + filter + '/' + datefrom + '/' + dateto,
         success: function (result) {
           $('#voucher-container').html(result);
         }

@@ -70,7 +70,6 @@ $container['Dagger'] = function($container){
     return new \App\Controllers\Dagger($container);
 };
 
-
 $container['AuthController'] = function($container){
     return new \App\Controllers\Auth\AuthController($container);
 };
@@ -108,8 +107,8 @@ $container['DashboardController'] = function($container){
     return new \App\Controllers\Vendor\DashboardController($container);
 };
 
-$container['ProductsController'] = function($container){
-    return new \App\Controllers\Vendor\ProductsController($container);
+$container['MerchantProductsController'] = function($container){
+    return new \App\Controllers\Vendor\MerchantProductsController($container);
 };
 
 $container['VoucherSearchController'] = function($container){
@@ -118,6 +117,10 @@ $container['VoucherSearchController'] = function($container){
 
 $container['VoucherRecordsController'] = function($container){
     return new \App\Controllers\Vendor\VoucherRecordsController($container);
+};
+
+$container['VoucherViewController'] = function($container){
+    return new \App\Controllers\Vendor\VoucherViewController($container);
 };
 
 $container['validator'] = function($container){

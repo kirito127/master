@@ -13,7 +13,68 @@ class VoucherRecordsController extends Controller{
         return $this->view->render($response, 'vendor/voucher-records.twig');
     }
 
-    public function loadVoucher($res, $req, $args){
+    public function viewVoucherMobile($req, $res, $args){
+        try {
+            return $res->withRedirect($this->router->pathFor('vendor.voucher-view', ['id' => $args['id']]));
+        } catch (\Exception $e) {
+            return $e->getMessage();
+        }
+    }
+
+    public function loadVoucherMobile($req, $res, $args){
+        $limit      =   $args['limit'];
+        $filter     =   $args['filter'];
+        $datefrom   =   $args['datefrom'];
+        $dateto     =   $args['dateto'];
+
+        $vouchers = Voucher::where(['status' => 'Used', 'Vendor_Id' => $_SESSION['userid']])->take($limit);
+        
+        if($filter){
+            $vouchers = $vouchers->Where('code', $filter);
+        }
+
+        if($datefrom <> 0 && $dateto <> 0){
+            $vouchers = $vouchers->whereDate('used_date', '>=', $datefrom)->whereDate('used_date', '<=', $dateto);
+        }elseif($datefrom <> 0){
+            $vouchers = $vouchers->whereDate('used_date', '>=', $datefrom);
+        }elseif($dateto <> 0){
+            $vouchers = $vouchers->whereDate('used_date', '<=', $dateto);
+        }
+
+        return $vouchers ? $this->templateRowMobile($vouchers->get()) : 'Empty';
+    }
+
+    protected function templateRowMobile($vouchers){
+        $template = '';
+        foreach($vouchers as $voucher){
+
+            $price = '';
+            if($voucher->sale_price != 0){
+                $price = 'P'. number_format($voucher->sale_price);
+            }else{
+               $price = $voucher->regular_price ? 'P'. number_format($voucher->regular_price): 'Variation Product';
+            }
+
+            $template .="<div id='" .$voucher->id. "' class='card mb-1'>
+                            <div class='card-body px-2 py-3'>
+                            <div class='row'>
+                                <div class='col-sm-8 col-8'>
+                                <h6 class='text-dark mb-0'>". $voucher->product_name."</h6>
+                                <small class='card-text'>". $voucher->code ."</small>
+                                </div>
+                                <div class='col-sm-4 col-4 d-flex align-items-center justify-content-end'>
+                                <h5 class='mb-0'>
+                                    <span class='badge badge-primary p-2'>$price</span>
+                                </h5>
+                                </div>
+                            </div>
+                            </div>
+                        </div>";
+        }
+        return $template;      
+    }
+
+    public function loadVoucher($req, $res, $args){
         $limit      =   $args['limit'];
         $filter     =   $args['filter'];
         $datefrom   =   $args['datefrom'];
@@ -36,14 +97,14 @@ class VoucherRecordsController extends Controller{
         }
        
         //return $vouchers->toSql();
-        return $vouchers ? $this->TemplateRow($vouchers->get()) : 'Empty';
+        return $vouchers ? $this->templateRow($vouchers->get()) : 'Empty';
     }
 
-    protected function TemplateRow($vouchers){
+    protected function templateRow($vouchers){
         $template = '';
         foreach($vouchers as $voucher){
             $price = $voucher->sale_price != 0 ? $voucher->sale_price  : $voucher->regular_price; // I wrote it here because I care for you !
-            $template .= "<tr class='animated fadeIn'>
+            $template .= "<tr style='cursor:pointer;' id='" .$voucher->id. "' class='animated fadeIn'>
                             <td>". $voucher->code ." </td>
                             <td>". $voucher->product_name."</td>
                             <td>P". number_format($price, 2)."</td>

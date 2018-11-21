@@ -13,7 +13,8 @@
         "guzzlehttp/guzzle": "^6.3",
         "respect/validation": "^1.1",
         "slim/csrf": "^0.8.3",
-        "slim/flash": "^0.4.0"
+        "slim/flash": "^0.4.0",
+        "vlucas/phpdotenv": "^2.5"
     },
     "autoload":{
         "psr-4":{

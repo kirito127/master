@@ -32,7 +32,7 @@ class ApiController extends Controller{
     }
 
     protected function switchUrl($version){
-        $url3 = 'https://alla.ph/wp-json/wc/v'+ $version + '/';
+        $url3 = 'https://alla.ph/wp-json/wc/v'. $version .'/';
         $this->guzzle = new Guzz(['base_uri' => $url3]);
     }
 
@@ -77,11 +77,16 @@ class ApiController extends Controller{
     }
 
     public function getVendorProducts($id=0){
-        if(!$id) return false;
-        $this->switchUrl(2);
-        $str = 'products/?vendor='. $id;
-        $result = $this->guzzle->request('GET', $str, $this->getAuth());
-        return $result->getBody();
+
+        try{
+            if(!$id) return false;
+            $this->switchUrl(2);
+            $str = 'products/?vendor='. $id;
+            $result = $this->guzzle->request('GET', $str, $this->getAuth());
+            return json_decode($result->getBody()->getContents());
+        }catch(\Exception $e){
+            return $e->getMessage();
+        }
     }
 
     public function getOrders($ordernum = 0){

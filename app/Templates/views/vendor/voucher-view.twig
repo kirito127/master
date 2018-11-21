@@ -1,0 +1,82 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+
+    <nav aria-label='breadcrumb animated fadeIn' class='mb-lg-3 mb-sm-1 mb-1'>
+        <ol class='breadcrumb'>
+            <li class='breadcrumb-item'>
+                <a href='/merchant/voucher-records'>
+                    <i class="fas fa-angle-left"></i> Back
+                </a>
+            </li>
+        </ol>
+    </nav>
+
+    {% include 'partials/content-flash.twig' %}
+
+    <div class='container animated fadeIn mt-1 mt-sm-1 px-1 px-sm-1 d-flex justify-content-center'>
+
+        {% for d in voucher %}
+
+            <div class="card" style="max-width: 40rem;">
+                <img class="card-img-top" src="{{ d.product_img }}" alt="Card image cap">
+                <div class="card-body p-0">
+                    <table class="table">
+                        <tbody>
+                            <tr>
+                                <td>Product</td>
+                                <td>{{ d.product_name }}</td>
+                            </tr>
+                            <tr>
+                                <td>Code</td>
+                                <td>{{ d.code }}</td>
+                            </tr>
+                            <tr>
+                                <td>Email</td>
+                                <td>{{ d.email }}</td>
+                            </tr>
+                            <tr>
+                                <td>Phone</td>
+                                <td>{{ d.phone | default('Not Available') }}</td>
+                            </tr>
+                            <tr>
+                                <td>Regular Price</td>
+                                <td>P{{ d.regular_price }}</td>
+                            </tr>
+                            <tr>
+                                <td>Sale Price</td>
+                                <td>P{{ d.sale_price }}</td>
+                            </tr>
+                            <tr>
+                                <td>Discount</td>
+                                <td>{{ d.discount }}%</td>
+                            </tr>
+                            <tr>
+                                <td>Ordered Date</td>
+                                <td>{{ d.ordered_date }}</td>
+                            </tr>
+                            <tr>
+                                <td>Expiration Date</td>
+                                <td>{{ d.expiration_date }}</td>
+                            </tr>
+                            <tr>
+                                <td>Usage Date</td>
+                                <td>{{ d.used_date.timestamp is defined ?: 'If this message show please report it to the admin immediately.'}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        {% endfor %}
+
+    </div>
+
+    <script type='text/javascript'>
+        $(function () {
+
+            var spinner = "<div class='text-center'><div class='lds-dual-ring text-center'></div></div>";
+        });
+    </script>
+
+{% endblock %}
