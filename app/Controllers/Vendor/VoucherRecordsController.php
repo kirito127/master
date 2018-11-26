@@ -97,13 +97,15 @@ class VoucherRecordsController extends Controller{
         }
        
         //return $vouchers->toSql();
-        return $vouchers ? $this->templateRow($vouchers->get()) : 'Empty';
+        return $vouchers ?  json_encode($this->templateRow($vouchers->get())) : 'Empty';
     }
 
     protected function templateRow($vouchers){
         $template = '';
+        $amount = 0;
         foreach($vouchers as $voucher){
             $price = $voucher->sale_price != 0 ? $voucher->sale_price  : $voucher->regular_price; // I wrote it here because I care for you !
+            $amount += $price;
             $template .= "<tr style='cursor:pointer;' id='" .$voucher->id. "' class='animated fadeIn'>
                             <td>". $voucher->code ." </td>
                             <td>". $voucher->product_name."</td>
@@ -112,7 +114,7 @@ class VoucherRecordsController extends Controller{
                             <td>". date('M. j, Y h:i A', strtotime($voucher->used_date)) ."</td>
                         </tr>";
         }
-        return $template;
+        return array('template'=> $template, 'amount' => $amount);
     }
     
 }

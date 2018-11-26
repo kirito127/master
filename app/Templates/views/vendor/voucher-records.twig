@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<nav aria-label='breadcrumb animated fadeIn' class='mb-lg-3 mb-sm-1 mb-1'>
+<nav aria-label='breadcrumb animated fadeIn' class='mb-lg-3 mb-sm-1 mb-1 d-none d-md-block'>
   <ol class='breadcrumb'>
     <li class='breadcrumb-item'><a href='/'><i class='fa fa-home'></i> </a></li>
     <li class='breadcrumb-item active' aria-current='page'>Voucher Records</li>
@@ -13,7 +13,7 @@
 
 
 <div class='container animated fadeIn mt-1 mt-sm-1 px-1 px-sm-1'>
-  <div class='jumbotron p-2 mb-2'>
+  <div class='jumbotron p-3 mb-2'>
 
     <div class='row'>
       <div class='col-md-2 order-2 order-md-1'>
@@ -51,9 +51,42 @@
       </div>
     </div>
   </div>
-  <hr>
-  <div class='table-responsive-sm d-none d-sm-none d-md-block'>
-    <table class='table table-striped table-light'>
+
+  <div class='jumbotron p-2 mb-2 text-muted'>
+    <div class="row">
+      <div class="col-md-3">
+        <small for='datefrom'>Gross Income</small>
+        <input readonly type='number' placeholder='0' class='form-control form-control-sm' id='salestxt'>
+      </div>
+      <div class="col-md-3">
+
+        <small for='searchtxt'>Commission</small>
+        <div class='input-group'>
+          <input id='commissiontxt' type='number' placeholder='0%' class='form-control form-control-sm' placeholder='Search for code'>
+          <span class='input-group-btn'>
+            <button class='btn btn-primary btn-sm' id='calculatebtn' type='button'>Calculate</button>
+          </span>
+        </div>
+
+      </div>
+      <div class="col-md-3"></div>
+      <div class="col-md-3">
+
+        <small for='cleartxt'>Total Profit</small>
+        <div class='input-group'>
+          <span class='input-group-btn'>
+            <button class='btn btn-danger btn-sm' id='clearbtn' type='button'>Clear</button>
+          </span>
+          <input readonly id='totaltxt' type='number' placeholder='0' class='form-control form-control-sm'>
+
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <div class='table-responsive-sm d-none d-sm-none bg-white d-md-block'>
+    <table class='table table-hover'>
       <thead>
         <th scope='col'>Code</th>
         <th scope='col'>Name</th>
@@ -78,6 +111,18 @@
       return (isMobile() ? loadVoucherMobile(limit, filter, datefrom, dateto) : loadVoucher(limit, filter, datefrom,
         dateto));
     }
+
+    $('#clearbtn').click(function(){
+      $('#salestxt').val('');
+      $('#commissiontxt').val('');
+    });
+
+    $('#calculatebtn').click(function(){
+      var commission = parseFloat($('#commissiontxt').val());
+      var sales = parseFloat($('#salestxt').val());
+      var profit = calculateCommission(sales, commission);
+      $('#totaltxt').val(parseFloat(profit).toFixed(2));
+    });
 
     $('#voucher-container').on('click', 'div.card', function () {
       redirect($(this).attr('id'));
@@ -136,13 +181,15 @@
     }
 
     function loadVoucher(limit = 10, filter = 0, datefrom = 0, dateto = 0) {
-      $('#voucher-container').html("<tr><td colspan='5'>" + spinner + "</td></tr>");
+      $('table tbody').html("<tr><td colspan='5'>" + spinner + "</td></tr>");
       $('table').show();
       $.ajax({
         type: 'GET',
         url: '/merchant/voucher-records/load/' + limit + '/' + filter + '/' + datefrom + '/' + dateto,
         success: function (result) {
-          $('table tbody').html(result);
+          var obj = JSON.parse(result);
+          $('table tbody').html(obj.template);
+          $('#salestxt').val(obj.amount);
         }
       });
     }

@@ -38,7 +38,6 @@ div.card.product{
 .lds-dual-ring {
     display: inline-block;
     width: 64px;
-    height: 64px;
   }
   .lds-dual-ring:after {
     content: " ";
@@ -48,7 +47,7 @@ div.card.product{
     margin: 1px;
     border-radius: 50%;
     border: 5px solid #fff;
-    border-color: #fff transparent #fff transparent;
+    border-color: #b861c6 transparent #b861c6 transparent;
     animation: lds-dual-ring 1.2s linear infinite;
   }
   @keyframes lds-dual-ring {
@@ -70,4 +69,17 @@ div.card.product{
     .text-xs-center {
       text-align: center;
     } 
+  }
+
+  main{
+    background-color: #F6F6F6;
+  }
+  .breadcrumb, .jumbotron{
+    background-color: #ffffff;
+  }
+  .container{
+    background-color: #F6F6F6;
+  }
+  .dropdown-menu{
+    padding: 0;
   }

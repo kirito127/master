@@ -10,10 +10,6 @@ $container['db'] = function($container) use ($capsule){
     return $capsule;
 };
 
-// $escaper = new Twig_Extension_Escaper(false);
-// $container->view->addExtension($escaper);
-
-
 //override 404 page
 $container['notFoundHandler'] = function ($c) {
     return function ($request, $response) use ($c) {
@@ -54,18 +50,6 @@ $container['view'] = function ($container) {
     return $view;
 };
 
-// // woo dependency
-// $container['Client'] = function($container){
-//     $woocommerce = new Automattic\WooCommerce\Client; 
-//     return $woocommerce;
-// };
-
-// //guzzle dependency
-// $container['Guzzle'] = function ($container) {
-//     $client = new \GuzzleHttp\Client();
-//     return $client;
-// };
-
 $container['Dagger'] = function($container){
     return new \App\Controllers\Dagger($container);
 };
@@ -97,10 +81,6 @@ $container['Api'] = function($container){
 $container['Email'] = function($container){
     return new \App\Controllers\EmailController($container);
 };
-
-// $container['PrivateApiController'] = function($container){
-//     return new \App\Controllers\PrivateApiController($container);
-// };
 
 //vendor dep
 $container['DashboardController'] = function($container){
@@ -136,13 +116,8 @@ $container['csrf'] = function($container){
 };
 $app->add($container->csrf);
 
-
 $container['passwordhasher'] = function($container){
     return new \App\Auth\PasswordHash(8, TRUE);
 };
-
-// $container['woocommerce'] = function($container){
-//     return new \Automattic\WooCommerce\Client(null, null, null, null);
-// };
 
 
