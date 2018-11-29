@@ -32,7 +32,7 @@
     })->add(new AuthMiddleWare($container));
 
     $app->group('', function(){
-        $this->get('/merchant','DashboardController:index')->setName('vendor.dashboard');
+        $this->get('/merchant','MerchantDashboardController:index')->setName('vendor.dashboard');
         $this->get('/merchant/voucher-search','VoucherSearchController:index')->setName('vendor.voucher-search');
         $this->get('/merchant/voucher-records','VoucherRecordsController:index')->setName('vendor.voucher-records');
     })->add(new VendorMiddleware($container));
@@ -72,7 +72,7 @@
     $app->get('/merchant/voucher-records/load-mobile/{limit}/{filter}/{datefrom}/{dateto}','VoucherRecordsController:loadVoucherMobile');
     $app->get('/merchant/voucher-records/view-mobile/{id}','VoucherRecordsController:viewVoucherMobile');
     $app->get('/merchant/voucher-view/{id}','VoucherViewController:index')->setName('vendor.voucher-view');
-
+    $app->get('/merchant/dashboard/{type}/{datefrom}/{dateto}', 'MerchantDashboardController:loadGraph');
 
 
 

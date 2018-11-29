@@ -1,469 +1,419 @@
 {% extends 'layout.twig' %}
 {% block content %}
 
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i> </a></li>
-        <li class="breadcrumb-item active" aria-current="page">Flash Sale</li>
-    </ol>
-</nav>
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a href="/">
+                    <i class="fa fa-home"></i>
+                </a>
+            </li>
+            <li class="breadcrumb-item active" aria-current="page">Flash Sale</li>
+        </ol>
+    </nav>
 
-{% include 'partials/content-flash.twig' %}
+    {% include 'partials/content-flash.twig' %}
 
-<div class="container-fluid">
+    <div class="container-fluid">
 
-    <!-- nav btn -->
-    <ul class="nav nav-tabs" id="myTab" role="tablist">
-        <li class="nav-item">
-            <a class="nav-link" id="product-tab" data-toggle="tab" href="#product" role="tab" aria-controls="product"
-                aria-selected="false">Products</a>
-        </li>
+        <!-- nav btn -->
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link" id="product-tab" data-toggle="tab" href="#product" role="tab" aria-controls="product" aria-selected="false">Products</a>
+            </li>
 
-        <li class="nav-item">
-            <a class="nav-link" id="schedule-tab" data-toggle="tab" href="#schedule" role="tab" aria-controls="schedule"
-                aria-selected="false">Schedule</a>
-        </li>
-        <li class="nav-item">
-            <a class="nav-link" id="dummyorder-tab" data-toggle="tab" href="#dummyorder" role="tab" aria-controls="dummyorder"
-                aria-selected="false">Dummy Order</a>
-        </li>
-    </ul>
-    <!-- end nav btn -->
+            <li class="nav-item">
+                <a class="nav-link" id="schedule-tab" data-toggle="tab" href="#schedule" role="tab" aria-controls="schedule" aria-selected="false">Schedule</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="dummyorder-tab" data-toggle="tab" href="#dummyorder" role="tab" aria-controls="dummyorder" aria-selected="false">Dummy Order</a>
+            </li>
+        </ul>
+        <!-- end nav btn -->
 
-    <!-- nav content -->
-    <div class="tab-content" id="myTabContent">
+        <!-- nav content -->
+        <div class="tab-content" id="myTabContent">
 
+            <!-- product-tab -->
+            <div class="tab-pane fade" id="product" role="tabpanel" aria-labelledby="product-tab">
+                <!-- custom container -->
+                <div class="alert-container"></div>
 
-        <!-- product-tab -->
-        <div class="tab-pane fade" id="product" role="tabpanel" aria-labelledby="product-tab">
-            <!-- custom container -->
-            <div class="alert-container"></div>
+                <!-- product tab alert -->
+                <div class="alert alert-success py-2 alert-dismissible fade show" role="alert">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h5 class="alert-heading">Instruction</h5>
+                    <p class='mb-0'>Choose the product you wish to be see in the Flash Sale. Hover on the product and click add.</p>
+                </div>
+                <!-- end product tab alert -->
 
-            <!-- product tab alert -->
-            <div class="alert alert-success py-2 alert-dismissible fade show" role="alert">
-                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h5 class="alert-heading">Instruction</h5>
-                <p class='mb-0'>Choose the product you wish to be see in the Flash Sale. Hover on the product and click
-                    add.</p>
+                <div class='container'>
+                    <div class='row'>
+                        <div class='col-lg-2'>
+                            <div class='form-group'>
+                                <select class='form-control rounded' id='showdrp'>
+                                    <option value='20' selected="selected">20</option>
+                                    <option value='50'>50</option>
+                                    <option value='100'>100</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-9 col-md-9 col-sm-10">
+                            <div class="input-group">
+                                <input type="search" id='searchtxt' class="form-control rounded" placeholder="Search for products">
+                                <div class="input-group-append">
+                                    <button class="btn btn-secondary" type="button" id="searchbtn">Search</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-1 col-md-3 col-sm-2  py-2 pl-0 m-0">
+
+                            <!-- basket -->
+                            <a data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
+                                <i class="fas fa-shopping-basket"></i>
+                                <span class="badge badge-pill badge-danger" id="basket-count">0</span>
+                            </a>
+                            <!-- end basket -->
+
+                            <!-- basket dropdown -->
+                            <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg" id="basketbtn">
+                                <div class="basket-items"></div>
+                            </div>
+                            <!-- basket dropdown end -->
+
+                        </div>
+                    </div>
+                </div>
+                <hr>
+
+                <!-- product container -->
+                <div class="product-container container-fluid p-0 d-flex flex-wrap mb-2"></div>
+                <center>
+                    <button id='loadmorebtn' class="btn btn-primary" style='display:none'>Load More</button>
+                </center>
+
+                <!-- Modal -->
+                <div class='modal fade' id='basket-modal' tabindex="-1" role='dialog' aria-hidden='true'>
+                    <input type="hidden" id='modal-itemname'>
+                    <input type="hidden" id='modal-itemid'>
+                    <div class='modal-dialog modal-dialog-centered' role='document'>
+                        <div class='modal-content'>
+                            <div class='modal-header py-2'>
+                                <h5 class='modal-title' id='exampleModalCenterTitle'>Confirmation</h5>
+                                <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+                                    <span aria-hidden='true'>&times;</span>
+                                </button>
+                            </div>
+                            <div class='modal-body'>
+                                <p>Add this product to basket?</p>
+                                <button id='addtobasketbtn' type='button' class='btn btn-primary float-right' data-dismiss='modal'>Yes Please!</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- end modal -->
             </div>
-            <!-- end product tab alert -->
+            <!-- end product-tab -->
 
-            <div class='container'>
-                <div class='row'>
-                    <div class='col-lg-2'>
-                        <div class='form-group'>
-                            <select class='form-control rounded' id='showdrp'>
-                                <option value='20' selected>20</option>
-                                <option value='50'>50</option>
-                                <option value='100'>100</option>
+            <!-- schedule-tab -->
+            <div class="tab-pane fade" id="schedule" role="tabpanel" aria-labelledby="schedule-tab">
+
+                <div class="jumbotron py-2 bg-light pl-3">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <select id='statusdrp' class='form-control rounded'>
+                                <option value="All">All</option>
+                                <option value="Pending">Pending</option>
+                                <option value="Success">Success</option>
+                                <option value="Duplicate">Duplicate</option>
+                                <option value="Expired">Expired</option>
                             </select>
                         </div>
+                        <div class="col-md-9"></div>
                     </div>
 
-                    <div class="col-lg-9 col-md-9 col-sm-10">
-                        <div class="input-group">
-                            <input type="search" id='searchtxt' class="form-control rounded" placeholder="Search for products">
-                            <div class="input-group-append">
-                                <button class="btn btn-secondary" type="button" id="searchbtn">Search</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="col-lg-1 col-md-3 col-sm-2  py-2 pl-0 m-0">
-
-                        <!-- basket -->
-                        <a data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="true">
-                            <i class="fas fa-shopping-basket"></i>
-                            <span class="badge badge-pill badge-danger" id="basket-count">0</span>
-                        </a>
-                        <!-- end basket -->
-
-                        <!-- basket dropdown -->
-                        <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg" id="basketbtn">
-                            <div class="basket-items">
-                            </div>
-                        </div>
-                        <!-- basket dropdown end -->
-
-                    </div>
                 </div>
-            </div>
-            <hr>
-
-            <!-- product container -->
-            <div class="product-container container-fluid p-0 d-flex flex-wrap mb-2"></div>
-            <center>
-                <button id='loadmorebtn' class="btn btn-primary" style='display:none'>Load More</button>
-            </center>
-
-            <!-- Modal -->
-            <div class='modal fade' id='basket-modal' tabindex="-1" role='dialog' aria-hidden='true'>
-                <input type="hidden" id='modal-itemname'>
-                <input type="hidden" id='modal-itemid'>
-                <div class='modal-dialog modal-dialog-centered' role='document'>
-                    <div class='modal-content'>
-                        <div class='modal-header py-2'>
-                            <h5 class='modal-title' id='exampleModalCenterTitle'>Confirmation</h5>
-                            <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
-                                <span aria-hidden='true'>&times;</span>
-                            </button>
-                        </div>
-                        <div class='modal-body'>
-                            <p>Add this product to basket?</p>
-                            <button id='addtobasketbtn' type='button' class='btn btn-primary float-right' data-dismiss='modal'>Yes
-                                Please!</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <!-- end modal -->
-        </div>
-        <!-- end product-tab -->
-
-        <!-- schedule-tab -->
-        <div class="tab-pane fade" id="schedule" role="tabpanel" aria-labelledby="schedule-tab">
-
-            <div class="jumbotron py-2 bg-light pl-3">
-                <div class="row">
-                    <div class="col-md-3">
-                        <select id='statusdrp' class='form-control rounded'>
-                            <option value="All">All</option>
-                            <option value="Pending">Pending</option>
-                            <option value="Success">Success</option>
-                            <option value="Duplicate">Duplicate</option>
-                            <option value="Expired">Expired</option>
-                        </select>
-                    </div>
-                    <div class="col-md-9"></div>
-                </div>
-
-            </div>
-            <table class="table">
-                <thead>
-                    <tr>
-                    <th scope="col">
-                        <div class="form-check m-0">
-                            <label class="form-check-label">
-                            <input type="checkbox" class="form-check-input">
-                            </label>
-                        </div>
-                    </th>
-                    <th scope="col">Product ID</th>
-                    <th scope="col">User ID</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Sale Price</th>
-                    <th scope="col">Custom Price</th>
-                    <th scope="col">Date Range</th>
-                    <th scope="col">Date Set</th>
-                    <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody id='schedule-container'>
-                    <tr>
-                        <td>
-                            <div class="form-check">
-                                <label class="form-check-label">
-                                <input type="checkbox" class="form-check-input">
-                                </label>
-                            </div>
-                        </td>
-                        <td>3951</td>
-                        <td>1</td>
-                        <td>
-                            <span class="badge badge-pill badge-warning">P</span>
-                        </td>
-                        <td>P1,000.00</td>
-                        <td>P900.00</td>
-                        <td>0000-00-00 00:00:00 -<br>0000-00-00 00:00:00</td>
-                        <td>0000-00-00 00:00:00</td>
-                        <td>
-                            <button class="btn btn-danger btn-sm"><i class="far fa-trash-alt"></i></button>
-                            <button class="btn btn-warning btn-sm"><i class="far fa-edit"></i></button>
-                        </td>
-                    </tr>
-                </tbody>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th scope="col">
+                                <div class="form-check m-0">
+                                    <label class="form-check-label">
+                                        <input type="checkbox" class="form-check-input">
+                                    </label>
+                                </div>
+                            </th>
+                            <th scope="col">Product ID</th>
+                            <th scope="col">Status</th>
+                            <th scope="col">Sale Price</th>
+                            <th scope="col">Custom Price</th>
+                            <th scope="col">Date Range</th>
+                            <th scope="col">Date Set</th>
+                            <th scope="col">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id='schedule-container'></tbody>
                 </table>
-                <div class="jumbotron py-2 bg-light pl-3">
-                    <button class="btn btn-warning">Edit</button>
-                    <button class="btn btn-danger">Delete</button>
-                </div>
-        </div>
-        <!-- end schedule tab -->
+            </div>
+            <!-- end schedule tab -->
 
-        <div class="tab-pane fade" id="dummyorder" role='tabpanel'>
-            <!-- modal -->
-            <!-- <div class='modal fade' id='addtocartmodal' tabindex='-' role='dialog' aria-hidden='true'>
-                <input type="hidden" id='modalitemname'>
-                <input type="hidden" id='modalitemid'>
-                <div class='modal-dialog' role='document'>
-                    <div class='modal-content'>
-                        <div class='modal-header'>
-                            <h5 class='modal-title text-muted'><i class='fa fa-shopping-cart'></i></h5>
-                            <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
-                                <span aria-hidden='true'>&times;</span>
-                            </button>
-                        </div>
-                        <div class='modal-body px-5'>
-                            <div class='form-check p-0'>
-                                <label for='modalqtytext'>Enter quantity *</label>
-                                <input type='number' value='1' class='form-control rounded' id='modalqtytext' placeholder='e.g. 1'>
-                            </div>
-                        </div>
-                        <div class='modal-footer'>
-                            <button type='button' class='btn btn-secondary' data-dismiss='modal'>Close</button>
-                            <button type='button' id='modaladdtocartbtn' class='btn btn-primary'>Add to Cart</button>
-                        </div>
-                    </div>
-                </div>
-            </div> -->
-            <!-- modal end -->
+            <div class="tab-pane fade" id="dummyorder" role='tabpanel'>
+                <!-- modal -->
+                <!-- <div class='modal fade' id='addtocartmodal' tabindex='-' role='dialog' aria-hidden='true'> <input type="hidden" id='modalitemname'> <input type="hidden" id='modalitemid'> <div class='modal-dialog' role='document'> <div class='modal-content'> <div class='modal-header'> <h5 class='modal-title text-muted'><i class='fa fa-shopping-cart'></i></h5> <button type='button' class='close' data-dismiss='modal' aria-label='Close'> <span aria-hidden='true'>&times;</span> </button> </div> <div class='modal-body px-5'> <div class='form-check p-0'> <label for='modalqtytext'>Enter quantity *</label> <input type='number' value='1' class='form-control rounded' id='modalqtytext' placeholder='e.g. 1'> </div> </div> <div class='modal-footer'> <button type='button' class='btn btn-secondary' data-dismiss='modal'>Close</button> <button type='button' id='modaladdtocartbtn' class='btn btn-primary'>Add to Cart</button> </div> </div> </div> </div> -->
+                <!-- modal end -->
 
+            </div>
         </div>
+        <!-- end nav content -->
     </div>
-    <!-- end nav content -->
-</div>
-<script type='text/javascript'>
-    $(function () {
-        var limit = $('select#showdrp').val();
-        var filter = $('input#searchtxt').val();
-        var page = 1;
-        loadlastTab();
+    <script type='text/javascript'>
+        $(function () {
+            var limit = $('select#showdrp').val();
+            var filter = $('input#searchtxt').val();
+            var page = 1;
+            loadlastTab();
 
-        // tab button on onclick
-        $('#myTab li a').click(function () {
-            id = $(this).attr('id');
-            switch (id) {
-                case 'dummyorder-tab':
+            $('#schedule-container').on('click', 'tr td .dropdown .dropdown-menu a.btn-delete', function () {
+                var id = $(this).attr('id');
+                deleteSchedule(id);
+            });
 
-                    dummyOrdersClick();
+            // tab button on onclick
+            $('#myTab li a').click(function () {
+                id = $(this).attr('id');
+                switch (id) {
+                    case 'dummyorder-tab':
 
-                case 'schedule-tab':
+                        dummyOrdersClick();
 
-                default:
-                    sessionStorage.setItem('tab', id);
-                    break
+                    case 'schedule-tab':
+
+                    default:
+                        sessionStorage.setItem('tab', id);
+                        break
+                }
+            });
+
+            // show tab by id
+            function showTab(id) {
+                $(id).tab('show');
             }
-        });
 
-        // show tab by id
-        function showTab(id) {
-            $(id).tab('show');
-        }
-
-        function loadlastTab() {
-            var tab = sessionStorage.getItem('tab') ? sessionStorage.getItem('tab') : 'product-tab';
-            showTab('#' + tab);
-            switch (tab) {
-                case 'product-tab':
-                    productClick();
-                    break;
-                case 'schedule-tab':
-                    loadScheduleTable();
-                    break;
-                default:
-                    //showTab('product-tab');
-                    break
+            function loadlastTab() {
+                var tab = sessionStorage.getItem('tab') ? sessionStorage.getItem('tab') : 'product-tab';
+                showTab('#' + tab);
+                switch (tab) {
+                    case 'product-tab':
+                        productClick();
+                        break;
+                    case 'schedule-tab':
+                        loadScheduleTable();
+                        break;
+                    default:
+                        //showTab('product-tab');
+                        break
+                }
             }
-        }
 
-        function productClick() {
-            loadBasket();
-            getProducts(filter, limit);
-        }
+            function productClick() {
+                loadBasket();
+                getProducts(filter, limit);
+            }
 
-        $('button#loadmorebtn').click(function () {
-            page++;
-            appendProducts(filter, limit, page);
-        });
+            $('button#loadmorebtn').click(function () {
+                page++;
+                appendProducts(filter, limit, page);
+            });
 
-        $('select#showdrp').change(function () {
-            limit = $(this).val();
-            getProducts(filter, limit);
-        });
+            $('select#showdrp').change(function () {
+                limit = $(this).val();
+                getProducts(filter, limit);
+            });
 
-        $('input#searchtxt').keydown(function () {
-            filter = $(this).val();
-        });
+            $('input#searchtxt').keydown(function () {
+                filter = $(this).val();
+            });
 
-        $('input#searchtxt').change(function () {
-            filter = $(this).val();
-        });
+            $('input#searchtxt').change(function () {
+                filter = $(this).val();
+            });
 
-        $('button#searchbtn').click(function () {
-            getProducts(filter, limit);
-        });
+            $('button#searchbtn').click(function () {
+                getProducts(filter, limit);
+            });
 
-        // $('div.product-container').on('mouseover', '.card', function () {
-        //     $(this).css('box-shadow', '0 5px 10px #c2cfd6');
-        // });
+            // $('div.product-container').on('mouseover', '.card', function () {
+            //     $(this).css('box-shadow', '0 5px 10px #c2cfd6');
+            // });
 
-        // $('div.product-container').on('mouseout', '.card', function () {
-        //     $(this).css('box-shadow', '0 0 0');
-        // });
+            // $('div.product-container').on('mouseout', '.card', function () {
+            //     $(this).css('box-shadow', '0 0 0');
+            // });
 
-        // click product card
-        $('div.product-container').on('click', '.card.product', function () {
-            var id = $(this).children('input.card-id').val();
-            var name = $(this).children('input.card-name').val();
-            $('input#modal-itemname').val(name);
-            $('input#modal-itemid').val(id);
-            $('#basket-modal').modal('show');
-        });
+            // click product card
+            $('div.product-container').on('click', '.card.product', function () {
+                var id = $(this).children('input.card-id').val();
+                var name = $(this).children('input.card-name').val();
+                $('input#modal-itemname').val(name);
+                $('input#modal-itemid').val(id);
+                $('#basket-modal').modal('show');
+            });
 
-        // add to basket btn
-        $('button#addtobasketbtn').click(function () {
-            var name = $('input#modal-itemname').val();
-            var id = $('input#modal-itemid').val();
-            addToBasket(id, name);
-        });
+            // add to basket btn
+            $('button#addtobasketbtn').click(function () {
+                var name = $('input#modal-itemname').val();
+                var id = $('input#modal-itemid').val();
+                addToBasket(id, name);
+            });
 
-        //cart item trash click
-        $('div.basket-items').on('click', 'li span.btn-trash', function () {
-            removeBasketItem($(this).attr('id'));
-        });
+            //cart item trash click
+            $('div.basket-items').on('click', 'li span.btn-trash', function () {
+                removeBasketItem($(this).attr('id'));
+            });
 
-        $('div.basket-items').on('click', '#basketsavebtn', function () {
-            saveBasketItem();
-        });
+            $('div.basket-items').on('click', '#basketsavebtn', function () {
+                saveBasketItem();
+            });
 
-        //clear basket btn cick
-        $('div.basket-items').on('click', '#basketclearbtn', function () {
-            removeBasketItem();
-        });
+            //clear basket btn cick
+            $('div.basket-items').on('click', '#basketclearbtn', function () {
+                removeBasketItem();
+            });
 
-        //checkout cart btn click
-        $('div.cart-items').on('click', '#cartcheckoutbtn', function () {
-            checkOut();
-        });
+            //checkout cart btn click
+            $('div.cart-items').on('click', '#cartcheckoutbtn', function () {
+                checkOut();
+            });
 
-        // status drpdown select
-        $('#statusdrp').change(function(){
-            var status = $(this).val();
-            loadScheduleTable(status);
-        });
+            // status drpdown select
+            $('#statusdrp').change(function () {
+                var status = $(this).val();
+                loadScheduleTable(status);
+            });
 
-        $('#schedule-container').on('click', 'tr td:nth-child(9) button.btn-deleteschedule',function(){
-            var id = $(this).attr('id');
-            deleteSchedule(id);
-        });
+            $('#schedule-container').on('click', 'tr td:nth-child(9) button.btn-deleteschedule', function () {
+                var id = $(this).attr('id');
+                deleteSchedule(id);
+            });
 
+            //ajax
 
+            function deleteSchedule(id) {
+                $.ajax({
+                    type: 'GET',
+                    url: '/papi/schedule/delete/' + id,
+                    success: function (result) {
+                        if (result) {
+                            $('#schedule-container tr#' + id).fadeOut();
+                        } else {
+                            console.log(result);
+                        }
+                    }
+                });
+            }
 
-        //ajax
+            function loadScheduleTable(status = 'All') {
+                $.ajax({
+                    type: 'GET',
+                    url: '/papi/schedule/' + status,
+                    success: function (result) {
+                        //console.log(result);
+                        $('#schedule-container').html(result);
+                    }
+                });
+            }
 
-        function deleteSchedule(id){
-            $.ajax({
-                type: 'GET',
-                url: '/papi/schedule/delete/'+id,
-                success: function(result){
-                    if(result){
-                        $('#schedule-container tr#row' + id).fadeOut();
-                    }else{
+            //load products on product tab
+            function getProducts(filter = '', limit = 20) {
+                $.ajax({
+                    type: 'GET',
+                    url: '/papi/product/' + limit + '/' + filter,
+                    success: function (result) {
+                        var obj = JSON.parse(result);
+                        $('div.product-container').html(obj.template);
+                        $('button#loadmorebtn').css('display', obj.status ? 'block' : 'none');
+                        //console.log(result);
+                    }
+                });
+            }
+
+            //append products when load more is clikc
+            function appendProducts(filter = '', limit = 20, page = 1) {
+                var ajx = $.ajax({
+                    type: 'GET',
+                    url: '/papi/product/append/' + limit + '/' + page + '/' + filter,
+                    success: function (result) {
+                        var obj = JSON.parse(result);
+                        $('div.product-container').append(obj.template);
+                        $('button#loadmorebtn').css('display', obj.status ? 'block' : 'none');
+                        if (!obj.status) 
+                            ajx.abort();
+                        }
+                    });
+            }
+
+            //add product to basket
+            function addToBasket(id, name) {
+                $.ajax({
+                    type: 'GET',
+                    url: '/papi/basket/add/id=' + id + '/name=' + name,
+                    success: function (result) {
+                        var obj = JSON.parse(result);
+                        $('div.basket-items').html(obj.template);
+                        $('span#basket-count').text(obj.size);
+                    }
+                });
+            }
+
+            // load basket
+            function loadBasket() {
+                $.ajax({
+                    type: 'GET',
+                    url: '/papi/basket',
+                    success: function (result) {
+                        var obj = JSON.parse(result);
+                        $('div.basket-items').html(obj.template);
+                        $('span#basket-count').text(obj.size);
+                    }
+                });
+            }
+
+            // remove item to basket or clear that shit
+            function removeBasketItem(id = 0) {
+                $.ajax({
+                    type: 'GET',
+                    url: '/papi/basket/remove/' + id,
+                    success: function (result) {
+                        loadBasket();
+                    }
+                });
+            }
+
+            //save basket to db
+            function saveBasketItem() {
+                $.ajax({
+                    type: 'GET',
+                    url: '/papi/basket/save',
+                    success: function (result) {
+                        $('.alert-container').html(result);
+                    }
+                });
+            }
+
+            function checkOut() {
+                $.ajax({
+                    type: 'GET',
+                    url: '/papi/checkout',
+                    success: function (result) {
                         console.log(result);
                     }
-                }
-            });
-        }
+                });
+            }
 
-        function loadScheduleTable(status='All'){
-            $.ajax({
-                type: 'GET',
-                url: '/papi/schedule/'+status,
-                success: function(result){
-                    //console.log(result);
-                    $('#schedule-container').html(result);
-                }
-            });
-        }
-
-        //load products on product tab
-        function getProducts(filter = '', limit = 20) {
-            $.ajax({
-                type: 'GET',
-                url: '/papi/product/' + limit + '/' + filter,
-                success: function (result) {
-                   var obj = JSON.parse(result);
-                     $('div.product-container').html(obj.template);
-                   $('button#loadmorebtn').css('display', obj.status ? 'block' : 'none');
-                    //console.log(result);
-                }
-            });
-        }
-
-        //append products when load more is clikc
-        function appendProducts(filter = '', limit = 20, page = 1) {
-            var ajx = $.ajax({
-                type: 'GET',
-                url: '/papi/product/append/' + limit + '/' + page + '/' + filter,
-                success: function (result) {
-                    var obj = JSON.parse(result);
-                    $('div.product-container').append(obj.template);
-                    $('button#loadmorebtn').css('display', obj.status ? 'block' : 'none');
-                    if (!obj.status) ajx.abort();
-                }
-            });
-        }
-
-        //add product to basket
-        function addToBasket(id, name) {
-            $.ajax({
-                type: 'GET',
-                url: '/papi/basket/add/id=' + id + '/name=' + name,
-                success: function (result) {
-                    var obj = JSON.parse(result);
-                    $('div.basket-items').html(obj.template);
-                    $('span#basket-count').text(obj.size);
-                }
-            });
-        }
-
-        // load basket
-        function loadBasket() {
-            $.ajax({
-                type: 'GET',
-                url: '/papi/basket',
-                success: function (result) {
-                    var obj = JSON.parse(result);
-                    $('div.basket-items').html(obj.template);
-                    $('span#basket-count').text(obj.size);
-                }
-            });
-        }
-
-        // remove item to basket or clear that shit
-        function removeBasketItem(id = 0) {
-            $.ajax({
-                type: 'GET',
-                url: '/papi/basket/remove/' + id,
-                success: function (result) {
-                    loadBasket();
-                }
-            });
-        }
-
-        //save basket to db
-        function saveBasketItem(){
-            $.ajax({
-                type: 'GET',
-                url: '/papi/basket/save',
-                success: function (result) {
-                    $('.alert-container').html(result);
-                }
-            });
-        }
-
-        function checkOut() {
-            $.ajax({
-                type: 'GET',
-                url: '/papi/checkout',
-                success: function (result) {
-                    console.log(result);
-                }
-            });
-        }
-
-    });
-</script>
+        });
+    </script>
 {% endblock %}

@@ -52,13 +52,13 @@
     </div>
   </div>
 
-  <div class='jumbotron p-2 mb-2 text-muted'>
+  <div class='jumbotron p-2 mb-2 gradient-rare-wind shadow-sm'>
     <div class="row">
-      <div class="col-md-3">
-        <small for='datefrom'>Gross Income</small>
+      <div class="col-md-3 col-6 pr-sm-1 pr-1">
+        <small for='datefrom'>Gross Sales</small>
         <input readonly type='number' placeholder='0' class='form-control form-control-sm' id='salestxt'>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-3 col-6 pl-sm-1 pl-1">
 
         <small for='searchtxt'>Commission</small>
         <div class='input-group'>
@@ -69,8 +69,8 @@
         </div>
 
       </div>
-      <div class="col-md-3"></div>
-      <div class="col-md-3">
+      <div class="col-md-3 col-6"></div>
+      <div class="col-md-3 col-12">
 
         <small for='cleartxt'>Total Profit</small>
         <div class='input-group'>
@@ -201,7 +201,9 @@
         type: 'GET',
         url: '/merchant/voucher-records/load-mobile/' + limit + '/' + filter + '/' + datefrom + '/' + dateto,
         success: function (result) {
-          $('#voucher-container').html(result);
+          var obj = JSON.parse(result);
+          $('#voucher-container').html(obj.template);
+          $('#salestxt').val(obj.amount);
         }
       });
     }

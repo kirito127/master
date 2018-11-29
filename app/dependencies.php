@@ -83,8 +83,8 @@ $container['Email'] = function($container){
 };
 
 //vendor dep
-$container['DashboardController'] = function($container){
-    return new \App\Controllers\Vendor\DashboardController($container);
+$container['MerchantDashboardController'] = function($container){
+    return new \App\Controllers\Vendor\MerchantDashboardController($container);
 };
 
 $container['MerchantProductsController'] = function($container){

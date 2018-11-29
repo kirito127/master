@@ -11,6 +11,8 @@ class FlashSaleController extends Controller{
         return $this->view->render($response, 'admin/flashsale.twig');
     }
 
+    
+
     public function deleteSchedule($req, $res, $arg){
         $result = FlashSale::where('id', $arg['id'])->delete();
         return json_encode($result);
@@ -28,7 +30,7 @@ class FlashSaleController extends Controller{
                     case 'Expired': $badge='danger'; break;
                     default: break;}
 
-                $temp .="<tr id='row". $schedule['id'] ."'>
+                $temp .="<tr id='". $schedule['id'] ."'>
                             <td>
                                 <div class='form-check'>
                                     <label class='form-check-label'>
@@ -36,14 +38,19 @@ class FlashSaleController extends Controller{
                                     </label>
                                 </div>
                             </td>
-                            <td>". $schedule['Product_Id'] ."</td><td>". $schedule['User_Id'] ."</td>
+                            <td>". $schedule['Product_Id'] ."</td>
                             <td><small class='badge badge-pill badge-$badge'>". $schedule['status'] ."</small></td>
-                            <td>". $schedule['sale_price'] ."</td><td>". $schedule['custom_sale_price'] ."</td>
-                            <td>". $schedule['start_date'] .' - '. $schedule['end_date'] ."</td>
-                            <td>". $schedule['set_date'] ."</td>
+                            <td>P". number_format($schedule['sale_price'], 2) ."</td><td>P". number_format($schedule['custom_sale_price'], 2) ."</td>
+                            <td>". ($schedule['start_date'] != 0 ? date('M j, Y', strtotime($schedule['start_date'])) : 'N/A') .' - '. ($schedule['end_date'] != 0 ? date('M j, Y', strtotime($schedule['end_date'])) : 'N/A') ."</td>
+                            <td>". ($schedule['start_date'] != 0 ? date('M j, Y', strtotime($schedule['set_date'])) : 'N/A') ."</td>
                             <td>
-                                <button id='". $schedule['id'] ."' class='btn btn-danger btn-sm btn-deleteschedule'><i class='far fa-trash-alt'></i></button>
-                                <button id='". $schedule['id'] ."' class='btn btn-warning btn-sm btn-editschedule'><i class='far fa-edit'></i></button>
+                                <div class='dropdown'>
+                                    <i class='fas fa-ellipsis-h text-dark' data-toggle='dropdown'></i>
+                                    <div class='dropdown-menu'>
+                                        <a id='". $schedule['id'] ."' class='btn-edit dropdown-item' href='javascript:void(0)'><i class='far fa-edit'></i> Edit</a>
+                                        <a id='". $schedule['id'] ."' class='btn-delete dropdown-item text-sm' href='javascript:void(0)'><i class='far fa-trash-alt'></i> Delete</a>
+                                    </div>
+                                </div>
                             </td>
                         </tr>";
             }
@@ -53,6 +60,7 @@ class FlashSaleController extends Controller{
 
         return $temp;
     }
+
     public function loadSchedule($req, $res, $arg){
         $type = $arg['status'];
         $scheduleArr;
@@ -109,7 +117,7 @@ class FlashSaleController extends Controller{
         } catch (\Exception $e) {
             return  $err;
         }
-        clearCart();
+        $this->clearCart();
         return $create ? $success : $err;
     }
 

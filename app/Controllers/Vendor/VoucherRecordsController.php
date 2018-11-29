@@ -41,21 +41,22 @@ class VoucherRecordsController extends Controller{
             $vouchers = $vouchers->whereDate('used_date', '<=', $dateto);
         }
 
-        return $vouchers ? $this->templateRowMobile($vouchers->get()) : 'Empty';
+        return $vouchers ?  json_encode($this->templateRowMobile($vouchers->get())) : 'Empty';
     }
 
     protected function templateRowMobile($vouchers){
         $template = '';
+        $amount = 0;
         foreach($vouchers as $voucher){
-
-            $price = '';
+            $price = 0;
             if($voucher->sale_price != 0){
-                $price = 'P'. number_format($voucher->sale_price);
+                $price = $voucher->sale_price;
             }else{
-               $price = $voucher->regular_price ? 'P'. number_format($voucher->regular_price): 'Variation Product';
+               $price = $voucher->regular_price ? $voucher->regular_price : 'Variation Product';
             }
-
-            $template .="<div id='" .$voucher->id. "' class='card mb-1'>
+            $amount += is_numeric($price) ? $price : 0;
+ 
+            $template .="<div id='" .$voucher->id. "' class='card mb-1  shadow-sm'>
                             <div class='card-body px-2 py-3'>
                             <div class='row'>
                                 <div class='col-sm-8 col-8'>
@@ -64,14 +65,15 @@ class VoucherRecordsController extends Controller{
                                 </div>
                                 <div class='col-sm-4 col-4 d-flex align-items-center justify-content-end'>
                                 <h5 class='mb-0'>
-                                    <span class='badge badge-primary p-2'>$price</span>
+                                    <span class='badge badge-primary p-2'>". (is_numeric($price) ? '₱'. number_format($price) : 'VP' ) ."</span>
                                 </h5>
                                 </div>
                             </div>
                             </div>
                         </div>";
         }
-        return $template;      
+        
+        return array( 'template' => $template, 'amount' => $amount);      
     }
 
     public function loadVoucher($req, $res, $args){

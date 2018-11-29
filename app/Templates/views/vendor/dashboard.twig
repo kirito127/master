@@ -2,23 +2,249 @@
 
 {% block content %}
 
-<nav aria-label="breadcrumb">
-    <ol class="breadcrumb">
-      <li class="breadcrumb-item"><a href="/"><i class="fa fa-home"></i> </a></li>
-      <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-    </ol>
-</nav>
+    <nav aria-label='breadcrumb'>
+        <ol class='breadcrumb'>
+            <li class='breadcrumb-item'>
+                <a href='/'>
+                    <i class='fa fa-home'></i>
+                </a>
+            </li>
+            <li class='breadcrumb-item active' aria-current='page'>Dashboard</li>
+        </ol>
+    </nav>
 
-{% include 'partials/content-flash.twig' %}
+    {% include 'partials/content-flash.twig' %}
 
+    <div class='container-fluid'>
+        <div class='row'>
+            <div class='col-md-3 col-sm-6 col-6 p-md-2 p-1'>
 
-<p>merchant</p>
+                <div class='card text-white gradient-near-moon mb-1'>
+                    <div class='card-body pb-0'>
+                        <div class='btn-group float-right'>
+                            <!-- icon here -->
+                        </div>
+                        <h3 id='totalSales' class='text-value'>₱{{ totalGross }}</h3>
+                        <div>Gross Sales</div>
+                    </div>
+                    <div class='chart-wrapper mt-3' style='height:50px;'>
+                        <canvas class='chart' height='70'></canvas>
+                    </div>
+                </div>
 
+            </div>
+            <div class='col-md-3 col-sm-6 col-6 p-md-2  p-1'>
 
-<script type='text/javascript'>
-    $('p').click(function(){
-        alert('hello');
-    })
-</script>
+                <div class='card text-white gradient-ripe-malinka  mb-1'>
+                    <div class='card-body pb-0'>
+                        <div class='btn-group float-right'>
+                            <!-- icon here -->
+                        </div>
+                        <h3 id='totalSales' class='text-value'>{{ productsCount }}</h3>
+                        <div>Products</div>
+                    </div>
+                    <div class='chart-wrapper mt-3' style='height:50px;'>
+                        <canvas class='chart' height='70'></canvas>
+                    </div>
+                </div>
+
+            </div>
+            <div class='col-md-3 col-sm-6 col-6 p-md-2 p-1'>
+
+                <div class='card text-white bg-secondary  mb-1'>
+                    <div class='card-body pb-0'>
+                        <div class='btn-group float-right'>
+                            <!-- icon here -->
+                        </div>
+                        <h3 id='totalSales' class='text-value'>0</h3>
+                        <div>---</div>
+                    </div>
+                    <div class='chart-wrapper mt-3' style='height:50px;'>
+                        <canvas class='chart' height='70'></canvas>
+                    </div>
+                </div>
+
+            </div>
+            <div class='col-md-3 col-sm-6 col-6 p-md-2  p-1'>
+
+                <div class='card text-white bg-secondary  mb-1'>
+                    <div class='card-body pb-0'>
+                        <div class='btn-group float-right'>
+                            <!-- icon here -->
+                        </div>
+                        <h3 id='totalSales' class='text-value'>0</h3>
+                        <div>---</div>
+                    </div>
+                    <div class='chart-wrapper mt-3' style='height:50px;'>
+                        <canvas class='chart' height='450px'></canvas>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class='card'>
+            <div class='card-body'>
+                <div class='row'>
+                    <div class='col-sm-5'>
+                        <h4 class='card-title mb-0 text-dark'>Sales Chart</h4>
+                    </div>
+                    <!-- /.col-->
+                    <div class='col-sm-7'>
+                        <button id='custombtn' class='btn btn-outline-primary btn-sm float-right ml-1' data-toggle='modal' data-target='#exampleModal'>
+                            <i class='fas fa-cog'></i>
+                            Custom</button>
+
+                        <div id='salefilter' class='btn-group btn-group-sm btn-group-toggle float-right' data-toggle='buttons'>
+                            <label class='btn btn-outline-secondary'>
+                                <input id='Weekly Sales' value='week' type='radio' name='options' autocomplete='off'>
+                                Week
+                            </label>
+                            <label class='btn btn-outline-secondary active'>
+                                <input id='Monthly Sales' value='month' type='radio' name='options' autocomplete='off' checked='true'>
+                                Month
+                            </label>
+                            <label class='btn btn-outline-secondary'>
+                                <input id='Year Sales' value='year' type='radio' name='options' autocomplete='off'>
+                                Year
+                            </label>
+                        </div>
+
+                    </div>
+                    <!-- /.col-->
+                </div>
+                <!-- /.row-->
+
+                <div class='container-fluid chart-wrapper pt-3 px-2'>
+                    <progress id="animationProgress" max="1" value="0" style="width: 100%"></progress>
+                    <canvas class='chart' id='mainChart' height='430px'></canvas>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <!-- modal -->
+    <div class='modal fade' id='exampleModal' tabindex='-1' role='dialog' aria-labelledby='exampleModalLabel' aria-hidden='true'>
+        <div class='modal-dialog' role='document'>
+            <div class='modal-content'>
+                <div class='modal-header'>
+                    <h5 class='modal-title' id='exampleModalLabel'>Customize date</h5>
+                    <button type='button' class='close' data-dismiss='modal' aria-label='Close'>
+                        <span aria-hidden='true'>&times;</span>
+                    </button>
+                </div>
+                <div class='modal-body'>
+                    <div class='form-group'>
+                        <label for='datefrom'>Date from</label>
+                        <input type='date' value="{{ 'now' | date('Y-m-d') }}" a="a" class='form-control rounded' id='datefrom'>
+                    </div>
+                    <div class='form-group'>
+                        <label for='dateto'>Date to</label>
+                        <input type='date' value="{{ 'now' | date('Y-m-d') }}" a="a" class='form-control rounded' id='dateto'>
+                    </div>
+                </div>
+                <div class='modal-footer'>
+                    <button id='modalCloseBtn' type='button' class='btn btn-secondary btn-sm' data-dismiss='modal'>Close</button>
+                    <button id='modalOkayBtn' type='button' class='btn btn-primary btn-sm' data-dismiss='modal'>Okay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- modal end -->
+
+    <script type='text/javascript'>
+        $(function () {
+
+            loadGraph();
+
+            var progress = document.getElementById('animationProgress');
+            var mainChart = document.getElementById('mainChart').getContext('2d');
+            var gradientStroke = mainChart.createLinearGradient(500, 0, 300, 0);
+            gradientStroke.addColorStop(0, "#80b6f4");
+            gradientStroke.addColorStop(1, "#f49080");
+
+            function loadData(result, chartlabel) {
+                var obj = JSON.parse(result);
+                var labelarr = [];
+                var dataarr = [];
+                for (var i in obj) {
+                    labelarr.push(obj[i].date);
+                    dataarr.push(obj[i].amount);
+                }
+
+                // instantiate chart
+                var saleChart = new Chart(mainChart, {
+                    type: 'line',
+                    data: {
+                        labels: labelarr,
+                        datasets: [
+                            {
+                                label: chartlabel,
+                                borderColor: gradientStroke,
+                                fill: false,
+                                borderWidth: 2,
+                                data: dataarr
+                            }
+                        ]
+                    },
+                    options: {
+                        animation: {
+                            duration: 2000,
+                            onProgress: function (animation) {
+                                progress.value = animation.currentStep / animation.numSteps;
+                            },
+                            onComplete: function (animation) {
+                                window.setTimeout(function () {
+                                    progress.value = 0;
+                                }, 2000);
+                                $(progress).hide();
+                            }
+                        }
+                    }
+                });
+            }
+
+            $('#modalOkayBtn').click(function(){
+                var datefrom    = $('#datefrom').val();
+                var dateto      = $('#dateto').val();
+                if(datefrom || dateto){
+                    removeSaleFilter();
+                    loadGraph('custom', datefrom, dateto, 'Custom');
+                }
+
+            });
+
+            $('#salefilter label').click(function(){
+                $('#custombtn').removeClass('active');
+                var label       = $(this).children('input').attr('id');
+                var type        = $(this).children('input').val();
+                var datefrom    = $('#datefrom').val();
+                var dateto      = $('#dateto').val();
+        
+                loadGraph(type, datefrom, dateto, label);
+            });
+
+            function removeSaleFilter(){
+                $('#salefilter label').each(function(){
+                $(this).removeClass('active');
+                });
+            }
+
+            //ajax
+            function loadGraph(type = 'month', datefrom = 0, dateto = 0, label) {
+                $.ajax({
+                    type: 'GET',
+                    url: '/merchant/dashboard/' + type + '/' + datefrom + '/' + dateto,
+                    success: function (result) {
+                        loadData(result, label); 
+                        console.log(result);
+                    }
+                });
+            }
+
+        });
+    </script>
 
 {% endblock %}
