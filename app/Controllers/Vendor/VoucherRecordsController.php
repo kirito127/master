@@ -108,7 +108,7 @@ class VoucherRecordsController extends Controller{
         foreach($vouchers as $voucher){
             $price = $voucher->sale_price != 0 ? $voucher->sale_price  : $voucher->regular_price; // I wrote it here because I care for you !
             $amount += $price;
-            $template .= "<tr style='cursor:pointer;' id='" .$voucher->id. "' class='animated fadeIn'>
+            $template .="<tr style='cursor:pointer;' id='" .$voucher->id. "' class='animated fadeIn'>
                             <td>". $voucher->code ." </td>
                             <td>". $voucher->product_name."</td>
                             <td>P". number_format($price, 2)."</td>

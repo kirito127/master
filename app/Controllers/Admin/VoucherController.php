@@ -76,12 +76,20 @@ class VoucherController extends Controller{
     }
 
     public function getVendor(){
-        $result = $this->Api->getVendors();
-        $temp = '<option>All</option>';
-        foreach($result as $vendor){
-            $temp .= "<option value='". $vendor->id ."'> ". $vendor->display_name ."</option>";
+
+        try{
+            
+            $result = $this->Api->getVendors();
+            $temp = '<option>All</option>';
+            foreach($result as $vendor){
+                $temp .= "<option value='". $vendor->id ."'> ". $vendor->display_name ."</option>";
+            }
+            return $temp;
+
+        }catch(\Exception $e){
+            return $e->getMessage();
         }
-        return $temp;
+
     }
 
     public function getOrder($res, $req, $args){

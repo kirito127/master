@@ -2,6 +2,7 @@
 namespace App\Controllers;
 use  \Automattic\WooCommerce\Client as Woo;
 use GuzzleHttp\Client as Guzz; 
+use Automattic\WooCommerce\HttpClient\HttpClientException;
 
 class ApiController extends Controller{
 
@@ -10,8 +11,8 @@ class ApiController extends Controller{
     protected $url = 'https://alla.ph'; //woocommerce api
     protected $url2 = 'https://alla.ph/wp-json/wcmp/v1/'; //wcmp market api
     // protected $url3 = 'https://alla.ph/wp-json/wc/v2/'; //wcmp market wc api
-    protected const CONSUMER_KEY = 'ck_b7144d17091aa01a7a096154a445180c603dfc61';
-    protected const CONSUMER_SECRET = 'cs_cdb7705d4ad5bf29aa2b6366c55ac98397e4ff07';
+    const CONSUMER_KEY = 'ck_b7144d17091aa01a7a096154a445180c603dfc61';
+    const CONSUMER_SECRET = 'cs_cdb7705d4ad5bf29aa2b6366c55ac98397e4ff07';
 
     function __construct(){
         $this->woocommerce = new Woo(
@@ -20,7 +21,8 @@ class ApiController extends Controller{
             self::CONSUMER_SECRET,
             [
                 'wp_api'  => true,
-                'version' => 'wc/v2',
+                'version' => 'wc/v3',
+                'query_string_auth' => true,
             ]
         );
         $this->guzzle = new Guzz(['base_uri' => $this->url2]);
@@ -52,14 +54,20 @@ class ApiController extends Controller{
     }
 
     public function getProductsByIds($id){
-        $str = 'products/?include=';
-        if(is_array($id)){
-            $str .= explode(',', $id);
-        }elseif(is_int($id) || is_string($id)){
-            $str .= $id;
+        try{
+            $str = 'products/?include=';
+            if(is_array($id)){
+                $str .= explode(',', $id);
+            }elseif(is_int($id) || is_string($id)){
+                $str .= $id;
+            }
+            $result = $this->woocommerce->get($str);
+            return  $result ?  $result : false;
         }
-        $result = $this->woocommerce->get($str);
-        return  $result ?  $result : false;
+        catch(HttpClientException $e){
+            return $e->getMessage();
+        }
+
     }
 
     public function placeOrder($billing){
@@ -70,10 +78,12 @@ class ApiController extends Controller{
         return false;
     }
     
-    public function getVendors($id=0){
-        $str = 'vendors/' . ($id ? $id : '');
+    public function getVendors($id=''){
+        
+        $str = 'vendors/' . $id;
         $result = $this->guzzle->request('GET', $str, $this->getAuth());
         return json_decode($result->getBody()->getContents());
+
     }
 
     public function getVendorProducts($id=0){

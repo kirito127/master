@@ -14,8 +14,25 @@ class FlashSaleController extends Controller{
     
 
     public function deleteSchedule($req, $res, $arg){
-        $result = FlashSale::where('id', $arg['id'])->delete();
+        $ids    = json_decode($arg['id'], true);
+        $ids    = explode(',', $ids);
+        try{
+            // $org->products()->find($ids)->each(function ($product, $key) {
+            //     $product->delete();
+            // });
+
+
+            //$result = FlashSale::whereIn('id',$ids)->delete();
+
+            $result = FlashSale::find($ids)->each(function($item, $key){
+                $item->delete();
+            });
+
         return json_encode($result);
+        }catch(\Exception $e){
+            return $e->getMessage();
+        }
+
     }
 
     protected function assembleSchedule($schedules){
@@ -48,7 +65,7 @@ class FlashSaleController extends Controller{
                                     <i class='fas fa-ellipsis-h text-dark' data-toggle='dropdown'></i>
                                     <div class='dropdown-menu'>
                                         <a id='". $schedule['id'] ."' class='btn-edit dropdown-item' href='javascript:void(0)'><i class='far fa-edit'></i> Edit</a>
-                                        <a id='". $schedule['id'] ."' class='btn-delete dropdown-item text-sm' href='javascript:void(0)'><i class='far fa-trash-alt'></i> Delete</a>
+                                        <a id='". $schedule['id'] ."' class='btn-delete dropdown-item' href='javascript:void(0)'><i class='far fa-trash-alt'></i> Delete</a>
                                     </div>
                                 </div>
                             </td>
@@ -57,7 +74,6 @@ class FlashSaleController extends Controller{
         }else{
             $temp = "<tr class='table-danger text-center'><td colspan='9'>No record found.</td></tr>";
         }
-
         return $temp;
     }
 
@@ -104,21 +120,40 @@ class FlashSaleController extends Controller{
     }
 
     public function saveBasket($request, $response){
-        $err = $this->container->Dagger->alertTemp('danger', 
-        '<strong>Oops!</strong> Something unexpected happened, Please try again.');
-        $success = $this->container->Dagger->alertTemp('success', 
-        "<strong>Perfect!</strong> You've successfully saved the products");
+        // $err = $this->container->Dagger->alertTemp('danger', 
+        // '<strong>Oops!</strong> Something unexpected happened, Please try again.');
+        // $success = $this->container->Dagger->alertTemp('success', 
+        // "<strong>Perfect!</strong> You've successfully saved the products");
+        // $create = null;
+        // try {  
+        //     $basketarr = $this->basketToArray();
+        //     $create = FlashSale::insert($basketarr);
+        // } catch (\Illuminate\Database\QueryException $e) {
+        //     $err = $e;
+        // } catch (\Exception $e) {
+        //     $err = $e->getMessage();
+        // }
+        // $this->clearCart();
+        // return $create ? $success : $err;
+        return json_encode($this->basketToArray());
+    }
+    
+    protected function basketToArray(){
 
-        try {  
-            $basketarr = $this->basketToArray();
-            $create = FlashSale::insert($basketarr);
-        } catch (\Illuminate\Database\QueryException $e) {
-            return  $err;
-        } catch (\Exception $e) {
-            return  $err;
-        }
-        $this->clearCart();
-        return $create ? $success : $err;
+            $ids = array_column($_SESSION['basket'], 'id');
+            $products = $this->Api->getProductsByIds(implode(',', $ids));
+            $itemarr = array();
+            // foreach($products as $product){
+            //     $itemarr[] = array(
+            //         'Product_Id'        => $product->id,
+            //         'user_Id'           => $_SESSION['userid'],     
+            //         'status'            => 'Pending',
+            //         'sale_price'        => $product->sale_price,
+            //         'custom_sale_price' => 0,
+            //     );
+            // }   
+            return $products;
+
     }
 
     protected function clearCart(){
@@ -126,6 +161,7 @@ class FlashSaleController extends Controller{
     }
 
     public function extractCartSession(){
+
         $new = array(); $cart = $_SESSION['cart']; 
         foreach($cart as $item){
             $new[] = array(
@@ -134,32 +170,17 @@ class FlashSaleController extends Controller{
             );
         }
         return $new;
+        
     } 
 
-    protected function basketToArray(){
-        $ids = array_column($_SESSION['basket'], 'id');
-        $products = $this->container->Api->getProductsByIds(implode(',', $ids));
-        $itemarr =array();
-        foreach($products as $product){
-            $itemarr[] = array(
-                'Product_Id'        => $product->id,
-                'user_Id'           => $_SESSION['userid'],     
-                'status'            => 'Pending',
-                'sale_price'        => $product->sale_price,
-                'custom_sale_price' => 0,
-            );
-        }   
-        return $itemarr;
-    }
-
     public function addToBasket($req, $res, $arg){
-        if(!isset($_SESSION['basket']) || $_SESSION['basket'] == null) $_SESSION['basket'] = array();
+            if(!isset($_SESSION['basket']) || $_SESSION['basket'] == null) $_SESSION['basket'] = array();
 
-        if(!$this->checkExistence($arg['id'], $_SESSION['basket'], 'id'))
-            $_SESSION['basket'][] = array(
-                'id' => $arg['id'], 'name' => $arg['name']
-            );
-        return $this->loadBasket();
+            if(!$this->checkExistence($arg['id'], $_SESSION['basket'], 'id'))
+                $_SESSION['basket'][] = array(
+                    'id' => $arg['id'], 'name' => $arg['name']
+                );
+            return $this->loadBasket();
     }
 
     protected function checkExistence($in, $array, $key){
@@ -172,37 +193,46 @@ class FlashSaleController extends Controller{
     }
 
     public function loadBasket(){
-        $arr = $_SESSION['basket']; $template = '';
 
-        if(count($arr)){
-            $template  .=  "<ul class='list-group list-group-flush basket-btn'>
-                                <li class='list-group-item p-2 bg-secondary text-center'>
-                                    <span><strong>". count($arr) ."</strong> product(s) selected</span>
-                                </li>
-                            </ul>";     
-
-            foreach($arr as $item){
-                $template .="<ul class='list-group list-group-flush'>
+        try{
+            $arr = isset($_SESSION['basket']) ? $_SESSION['basket'] : $_SESSION['basket']; 
+            $size = ($arr ? count($arr) : 0);
+            $template = '';
+    
+            if($size){
+                $template  .=  "<ul class='list-group list-group-flush basket-btn'>
+                                    <li class='list-group-item p-2 bg-secondary text-center'>
+                                        <span><strong>". $size  ."</strong> product(s) selected</span>
+                                    </li>
+                                </ul>";     
+    
+                foreach($arr as $item){
+                    $template .="<ul class='list-group list-group-flush'>
+                                    <li class='list-group-item'>
+                                        <span id='".$item['id']."' style='cursor:pointer' class='btn-trash float-right text-danger'><i class='fas fa-times'></i></span>
+                                        <small class='text-dark'>".$item['name']."</small>
+                                    </li>
+                                </ul>";
+                }
+                $template  .=  "<ul class='list-group list-group-flush basket-btn'>
+                                    <li class='list-group-item p-2 d-flex justify-content-end'>
+                                        <button id='basketclearbtn' class='btn btn-secondary btn-sm rounded'>Clear</button>
+                                        <button id='basketsavebtn' class='btn btn-success btn-sm rounded ml-1'>Save</button>
+                                    </li>
+                                </ul>";
+            }else{
+                $template = "<ul class='list-group list-group-flush'>
                                 <li class='list-group-item'>
-                                    <span id='".$item['id']."' style='cursor:pointer' class='btn-trash float-right text-danger'><i class='fas fa-times'></i></span>
-                                    <small class='text-dark'>".$item['name']."</small>
+                                    <span>Basket is empty.</span>
                                 </li>
                             </ul>";
             }
-            $template  .=  "<ul class='list-group list-group-flush basket-btn'>
-                                <li class='list-group-item p-2 d-flex justify-content-end'>
-                                    <button id='basketclearbtn' class='btn btn-secondary btn-sm rounded'>Clear</button>
-                                    <button id='basketsavebtn' class='btn btn-success btn-sm rounded ml-1'>Save</button>
-                                </li>
-                            </ul>";
-        }else{
-            $template = "<ul class='list-group list-group-flush'>
-                            <li class='list-group-item'>
-                                <span>Basket is empty.</span>
-                            </li>
-                        </ul>";
+           return json_encode(array('template' => $template, 'size' => $size ));
+        
+        }catch(\Exception $e){
+            return json_encode($e->getMessage());
         }
-        return json_encode(array('template' => $template, 'size' => count($arr)));
+
     }
 
     public function removeToBasket($req, $res, $arg){
@@ -250,7 +280,7 @@ class FlashSaleController extends Controller{
 
     public function getProducts($req, $res, $arg){
         try{
-            $filter =  !isset($arg['filter']) ?: $arg['filter'];
+            $filter =  (!isset($arg['filter']) ?: $arg['filter']);
             $productArr = $this->container->Api->getProducts(array(
                 'page'      => 1,
                 'status'    => 'publish',
@@ -262,10 +292,8 @@ class FlashSaleController extends Controller{
                 'template'  =>  $this->assembleProduct($productArr),
                 'status'    =>  $productArr ? true : false,
             );
-        } catch (\Illuminate\Database\QueryException $e) {
-            return  $e;
         }catch(\Exception $e){
-            return $e;
+            return json_encode($e->getMessage());
         }
         return json_encode($result);
     }
