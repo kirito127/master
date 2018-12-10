@@ -109,7 +109,7 @@ main {
 }
 
 .gradient-ripe-malinka {
-  background-image: linear-gradient(to top right,#F188E2, #F46183);
+  background-image: linear-gradient(to right,#F188E2, #F46183);
 }
 
 .gradient-morpheus-den{
@@ -117,4 +117,13 @@ main {
 }
 .gradient-rare-wind{
   background-image: linear-gradient(to right,#AAECE9, #FBD7E3);
+}
+
+.display-5{
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 1.45rem;
+}
+
+.btn-round{
+  border-radius:  100px 100px ;
 }

@@ -43,6 +43,8 @@ class AuthController extends Controller{
                 return $response->withRedirect($this->router->pathFor('vendor.dashboard'));
             }elseif($this->auth->role() == 'administrator'){
                 return $response->withRedirect($this->router->pathFor('dashboard'));
+            }elseif($this->auth->role() == 'reseller'){
+                return $response->withRedirect($this->router->pathFor('reseller.dashboard'));
             }
 
         }

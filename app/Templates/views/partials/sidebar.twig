@@ -47,7 +47,30 @@
                 <i class="fas fa-ticket-alt"></i> Voucher Records
             </a>
         </li>
+        
+        {% elseif auth.role == 'reseller' %}
+
+        <li class="nav-title">
+            Hi, Merchant {{ user.user_nicename }}
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href='/reseller'>
+                <i class="fas fa-tachometer-alt"></i> Dashboard
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href='/reseller/product'>
+                <i class="fab fa-product-hunt"></i> Products
+            </a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href='/reseller/order'>
+                <i class="fas fa-ticket-alt"></i> Order
+            </a>
+        </li>
 
         {% endif %}
+
+
     </ul>
 </nav>

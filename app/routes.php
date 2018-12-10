@@ -6,6 +6,7 @@
     use App\Middleware\AuthMiddleWare;
     use App\Middleware\GuestMiddleWare;
     use App\Middleware\VendorMiddleWare;
+    use App\Middleware\ResellerMiddleWare;
 
     $app->add(function (Request $request, Response $response, callable $next) {
         $uri = $request->getUri();
@@ -36,6 +37,14 @@
         $this->get('/merchant/voucher-search','VoucherSearchController:index')->setName('vendor.voucher-search');
         $this->get('/merchant/voucher-records','VoucherRecordsController:index')->setName('vendor.voucher-records');
     })->add(new VendorMiddleware($container));
+
+    $app->group('', function(){
+        $this->get('/reseller','ResellerDashboardController:index')->setName('reseller.dashboard');
+        $this->get('/reseller/product', 'ResellerProductController:index');
+        $this->get('/reseller/product/register/{name}/{code}', 'ResellerProductController:registerProduct');
+        $this->get('/reseller/product/load/{limit}/{filter}', 'ResellerProductController:loadProduct');
+    })->add(new ResellerMiddleware($container));
+    
 
     $app->group('', function(){
         $this->get('/auth/login','AuthController:getLogin')->setName('auth.login');
@@ -73,6 +82,10 @@
     $app->get('/merchant/voucher-records/view-mobile/{id}','VoucherRecordsController:viewVoucherMobile');
     $app->get('/merchant/voucher-view/{id}','VoucherViewController:index')->setName('vendor.voucher-view');
     $app->get('/merchant/dashboard/{type}/{datefrom}/{dateto}', 'MerchantDashboardController:loadGraph');
+
+
+
+   
 
 
 

@@ -82,6 +82,15 @@ $container['Email'] = function($container){
     return new \App\Controllers\EmailController($container);
 };
 
+//reseller dep
+$container['ResellerDashboardController'] = function($container){
+    return new \App\Controllers\Reseller\ResellerDashboardController($container);
+};
+
+$container['ResellerProductController'] = function($container){
+    return new \App\Controllers\Reseller\ResellerProductController($container);
+};
+
 //vendor dep
 $container['MerchantDashboardController'] = function($container){
     return new \App\Controllers\Vendor\MerchantDashboardController($container);

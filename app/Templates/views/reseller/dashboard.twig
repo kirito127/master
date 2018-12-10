@@ -1,0 +1,26 @@
+{% extends 'layout.twig' %}
+
+{% block content %}
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/reseller"><i class="fa fa-home"></i> </a></li>
+      <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
+    </ol>
+</nav>
+
+{% include 'partials/content-flash.twig' %}
+
+
+<p>dashboard {{ auth.role }}</p>
+
+
+<script type='text/javascript'>
+    $('p').click(function(){
+        alert('hello');
+    })
+</script>
+
+{% endblock %}
+
+
